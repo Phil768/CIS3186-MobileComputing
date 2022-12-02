@@ -1,23 +1,17 @@
 import * as React from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createStackNavigator } from "@react-navigation/stack";
 import MainContainer from "./navigation/MainContainer";
 import FirstScreen from "./firstSceen";
 
-const Stack = createNativeStackNavigator();
-function MyStack() {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen name="FirstScreen" component={FirstScreen} />
-    </Stack.Navigator>
-  );
-}
-
+const Stack = createStackNavigator();
 function App() {
-  // return <MainContainer />;
   return (
-    <NavigationContainer>
-      <MyStack />
+    <NavigationContainer independent={true}>
+      <Stack.Navigator>
+        <Stack.Screen name="FirstScreen" component={FirstScreen} />
+        <Stack.Screen name="MainContainer" component={MainContainer} />
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }

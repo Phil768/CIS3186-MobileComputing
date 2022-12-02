@@ -15,10 +15,10 @@ const settingsName = "Settings";
 
 const Tab = createBottomTabNavigator();
 
-export default function MainContainer() {
+const MainContainer = () => {
   return (
     //Navigation method.
-    <NavigationContainer>
+    <NavigationContainer independent={true}>
       {/*Creating the bottom navigation*/}
       <Tab.Navigator
         //The default route.
@@ -57,4 +57,6 @@ export default function MainContainer() {
       </Tab.Navigator>
     </NavigationContainer>
   );
-}
+};
+
+export default MainContainer;

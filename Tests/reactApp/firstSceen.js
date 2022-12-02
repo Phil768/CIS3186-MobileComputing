@@ -7,60 +7,70 @@ import {
   TextInput,
   Button,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
-import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  query,
+  where,
+  getDocs,
+  queryEqual,
+} from "firebase/firestore";
+import { Firestore } from "firebase/firestore";
 import { auth, db } from "./navigation/firebase";
 
-export default function FirstScreen({ navigation }) {
-  //Creating an initial state(This data will e taken form firebase in the future.)
-  const [people, setPeople] = React.useState([{ name: "John", id: 0 }]);
-  //   async function showData() {
-  //     const q = query(collection(db, "Users"));
-  //     const querySnapshot = await getDocs(q);
-  //     querySnapshot.forEach((doc) => {
-  //       setPeople({ name: doc.data().Name, id: doc.data().id });
-  //     });
-  //   }
-  //   let addData = async (data) => {
-  //     const docRef = await addDoc(collection(db, "input"), {
-  //       name: data.name,
-  //       id: 1,
-  //     });
-  //   };
+const FirstScreen = ({ navigation }) => {
+  const [loading, setLoading] = React.useState(true); // Set loading to true on component mount
+  const [users, setUsers] = React.useState([]); // Initial empty array of users
 
-  console.log("PEOPLE: " + people);
+  //Function to get all the data from the databse.
+  const getData = async () => {
+    const q = query(collection(db, "Users"));
+    const querySnapshot = await getDocs(q);
+    const users = [];
 
+    querySnapshot.forEach((documentSnapshot) => {
+      users.push({
+        ...documentSnapshot.data(),
+        key: documentSnapshot.id,
+      });
+    });
+    setUsers(users);
+    setLoading(false);
+  };
+
+  //Loading the data before the app loads.
+  React.useEffect(() => {
+    getData();
+
+    return () => {
+      console.log("Success");
+    };
+  }, []);
+
+  if (loading) {
+    return <ActivityIndicator />;
+  }
   return (
-    // <View style={styles.container}>
-    //   <View>
-    //     <TextInput value={people} style={styles.input} />
-    //     <Button
-    //       title="Add"
-    //       onPress={() => {
-    //         addData(people);
-    //         setPeople("");
-    //         showData();
-    //       }}
-    //     />
-    //   </View>
-    <FlatList
-      //Data to output.
-      data={people}
-      //Since the flatlist requires 'key' field, in case our database has an id field for example.
-      keyExtractor={(item) => item.id}
-      //Rendering each item in our state array.
-      renderItem={({ item }) => (
-        <TouchableOpacity>
-          {" "}
-          onPress={() => navigation.navigate("MainContainer")}
-          <Text style={styles.item}>
-            {item.name}, {item.id}
-          </Text>
-        </TouchableOpacity>
-      )}
-    />
+    <View>
+      <FlatList
+        data={users}
+        extraData={users}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            onPress={() => navigation.navigate("MainContainer")}
+          >
+            <Text style={styles.item}>
+              Name: {item.Name} Id: {item.id}
+            </Text>
+          </TouchableOpacity>
+        )}
+      />
+    </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -86,3 +96,5 @@ const styles = StyleSheet.create({
     padding: 10,
   },
 });
+
+export default FirstScreen;

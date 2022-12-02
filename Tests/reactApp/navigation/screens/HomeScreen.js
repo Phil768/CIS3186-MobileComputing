@@ -9,8 +9,9 @@ export default function HomeScreen({ navigation }) {
   const [input, setInput] = React.useState("");
 
   let addData = async (data) => {
-    const docRef = await addDoc(collection(db, "input"), {
-      input: data,
+    const docRef = await addDoc(collection(db, "Users"), {
+      Name: data,
+      id: 1,
     });
   };
 
