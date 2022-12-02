@@ -5,13 +5,14 @@ import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
 import { auth, db } from "../firebase.js";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 
-export default function HomeScreen({ navigation }) {
-  const [input, setInput] = React.useState("");
+export default function HomeScreen({ navigation, route }) {
+  //const [id, setId] = React.useState(props.id);
+  const { id } = route.params;
 
   let addData = async (data) => {
     const docRef = await addDoc(collection(db, "Users"), {
       Name: data,
-      id: 1,
+      id: 2,
     });
   };
 
@@ -23,6 +24,8 @@ export default function HomeScreen({ navigation }) {
     });
   };
 
+  console.log("ID: " + { id });
+
   return (
     <View
       style={{
@@ -30,51 +33,7 @@ export default function HomeScreen({ navigation }) {
         justifyContent: "center",
       }}
     >
-      <View>
-        <>
-          <ListItem
-            leadingMode="avatar"
-            leading={
-              <Avatar
-                image={{ uri: "https://mui.com/static/images/avatar/1.jpg" }}
-              />
-            }
-            title="Brunch this weekend?"
-            secondaryText="I'll be in your neighborhood doing errands this…"
-          />
-          <ListItem
-            leadingMode="avatar"
-            leading={
-              <Avatar
-                image={{ uri: "https://mui.com/static/images/avatar/2.jpg" }}
-              />
-            }
-            title="Summer BBQ"
-            secondaryText="Wish I could come, but I'm out of town this…"
-          />
-          <ListItem
-            leadingMode="avatar"
-            leading={
-              <Avatar
-                image={{ uri: "https://mui.com/static/images/avatar/3.jpg" }}
-              />
-            }
-            title="Oui Oui"
-            secondaryText="Do you have Paris recommendations? Have you ever…"
-          />
-        </>
-      </View>
-      <View>
-        <TextInput onChangeText={setInput} value={input} style={styles.input} />
-        <Button
-          title="Add"
-          onPress={() => {
-            addData(input);
-            setInput("");
-            showData();
-          }}
-        />
-      </View>
+      <Text>ID: {id}</Text>
     </View>
   );
 }
