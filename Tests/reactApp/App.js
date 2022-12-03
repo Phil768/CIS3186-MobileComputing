@@ -4,6 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import MainContainer from "./navigation/MainContainer";
 import FirstScreen from "./firstSceen";
+import HomeScreen from "./navigation/screens/HomeScreen";
 import Add from "./Add";
 
 const Stack = createStackNavigator();
@@ -21,7 +22,11 @@ function App() {
           })}
         />
         <Stack.Screen name="Add" component={Add} />
-        <Stack.Screen name="MainContainer" component={MainContainer} />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="MainContainer"
+          component={MainContainer}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

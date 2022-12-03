@@ -3,28 +3,25 @@ import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 import { ListItem, Avatar } from "@react-native-material/core";
 import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
 import { auth, db } from "../firebase.js";
-import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 
-export default function HomeScreen({ navigation, route }) {
-  //const [id, setId] = React.useState(props.id);
-  const { id } = route.params;
-
-  let addData = async (data) => {
-    const docRef = await addDoc(collection(db, "Users"), {
-      Name: data,
-      id: 2,
-    });
-  };
-
-  let showData = async () => {
-    const q = query(collection(db, "input"));
+export default function HomeScreen(props) {
+  //Creating a state which will hold the current 'car' object.
+  const [car, setCar] = React.useState({});
+  //Getting the value of the selected id through the props passed in the main container of the navigation.
+  const id = props.id;
+  //Getting the desired document
+  const getData = async () => {
+    //Query which gets all the elements which have the above id (normally this is only one document sincce id is unique).
+    const q = query(collection(db, "Users"), where("id", "==", id));
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
-      console.log(doc.data());
+      setCar(doc.data());
     });
   };
-
-  console.log("ID: " + { id });
+  //Using a useEffect in order to get the data automatically once the page has loaded.
+  React.useEffect(() => {
+    getData();
+  });
 
   return (
     <View
@@ -33,7 +30,8 @@ export default function HomeScreen({ navigation, route }) {
         justifyContent: "center",
       }}
     >
-      <Text>ID: {id}</Text>
+      <Text>{car.id},</Text>
+      <Text>{car.Name}</Text>
     </View>
   );
 }

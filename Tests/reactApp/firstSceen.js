@@ -31,7 +31,6 @@ const wait = (timeout) => {
 const FirstScreen = ({ navigation }) => {
   const [loading, setLoading] = React.useState(true); // Set loading to true on component mount
   const [users, setUsers] = React.useState([]); // Initial empty array of users
-  const [input, setInput] = React.useState(""); // State to store the input of the user.
   const [refreshing, setRefreshing] = React.useState(false);
   //Adding data to the databse.
   let addData = async (data) => {
@@ -75,10 +74,6 @@ const FirstScreen = ({ navigation }) => {
     return <ActivityIndicator />;
   }
   return (
-    // <View>
-    //   <View>
-    //
-    //   </View>
     <SafeAreaView style={styles.container}>
       <FlatList
         data={users}
@@ -92,8 +87,7 @@ const FirstScreen = ({ navigation }) => {
             onPress={() => {
               console.log(">>" + item.id);
               navigation.navigate("MainContainer", {
-                screen: "HomeScreen",
-                params: { id: item.id },
+                id: item.id,
               });
             }}
           >
