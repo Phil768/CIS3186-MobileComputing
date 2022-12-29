@@ -8,22 +8,18 @@ import {
   SafeAreaView,
 } from "react-native";
 import * as React from "react";
-import { db, auth } from '../configurations';
-import {
-  collection,
-  query,
-  getDocs,
-} from "firebase/firestore";
+import { db, auth } from "../../configurations/index";
+import { collection, query, getDocs } from "firebase/firestore";
 
-const CarLists = ({}) => {
-  const currentUser = auth.currentUser;
-  console.log('Current user email: ' + currentUser.email);
+const CarLists = ({ navigation }) => {
+  //const currentUser = auth.currentUser;
+  //console.log("Current user email: " + currentUser.email);
   const [loading, setLoading] = React.useState(true); // Set loading to true on component mount
   const [cars, setCars] = React.useState([]); // Initial empty array of cars
   const [refreshing, setRefreshing] = React.useState(false);
 
   // Seeing if the cars are updating.
-  
+
   console.log(cars);
 
   // Function to get all the data from the databse.
@@ -35,12 +31,12 @@ const CarLists = ({}) => {
 
     // Iterating through each document.
 
-    console.log('Iterating through querySnapshot ' + querySnapshot);
+    console.log("Iterating through querySnapshot " + querySnapshot);
     querySnapshot.forEach((documentSnapshot) => {
       var data = documentSnapshot.data();
       console.log(data.id);
-      console.log('Data: ' + data);
-      if (data.email === currentUser.email){
+      console.log("Data: " + data);
+      if (data.email === currentUser.email) {
         cars.push({
           ...documentSnapshot.data(),
           key: documentSnapshot.id,
@@ -48,7 +44,7 @@ const CarLists = ({}) => {
       }
     });
     setCars(cars);
-    console.log('Cars: ' + cars);
+    console.log("Cars: " + cars);
     setLoading(false);
   };
 
@@ -80,7 +76,11 @@ const CarLists = ({}) => {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
         renderItem={({ item }) => (
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("MainContainer");
+            }}
+          >
             <Text style={styles.item}>
               Name: {item.Name}
               Email: {item.email}
