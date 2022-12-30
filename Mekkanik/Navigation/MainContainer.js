@@ -1,19 +1,22 @@
-//prerequisites
+// Imports required
 import * as React from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from "react-native-vector-icons/Ionicons";
-//classes
-import AddScreen from "./screens/AddCarToList";
-import CarListsScreen from "./screens/CarLists";
-import LoginScreen from "./screens/LoginSignup";
-//Screen names
-const addName = "Add";
-const listName = "List";
-const loginName = "Login";
+
+// Classes 
+import HomeScreen from "./screens/HomeScreen";
+import SettingsScreen from "./screens/SettingsScreen";
+import MapScreen from "./screens/MapScreen";
+
+// Screen names
+const homeName = "Home";
+const detailsName = "Details";
+const settingsName = "Settings";
 
 const Tab = createBottomTabNavigator();
+
 const CustomTabBarButton = ({ children, onPress, focused }) => (
   <TouchableOpacity
     style={{
@@ -38,16 +41,19 @@ const CustomTabBarButton = ({ children, onPress, focused }) => (
 );
 
 const MainContainer = ({ route }) => {
+  //Storing the selected id in a variable.
+  console.log('route?.params:', route?.params);
+  const { car } = route?.params || {};
   return (
-    //Navigation method.
+    // Navigation method.
     <NavigationContainer independent={true}>
       {/*Creating the bottom navigation*/}
       <Tab.Navigator
-        //The default route.
-        //initialRouteName={ }
-        //Styling options for the bottom navigation.
-        tabBarOptions={{ showLabel: false }}
+        // The default route.
+        initialRouteName={homeName}
+        // Styling options for the bottom navigation.
         screenOptions={{
+          tabBarShowLabel: false,
           activeTintColor: "black",
           inactivateTintColor: "grey",
           tabBarStyle: {
@@ -66,7 +72,7 @@ const MainContainer = ({ route }) => {
         {/*The below are the options which will be present in the bottom navigation*/}
         <Tab.Screen
           name={homeName}
-          children={() => <HomeScreen id={id} />}
+          children={() => <HomeScreen car={car} />}
           options={{
             tabBarIcon: ({ focused }) => (
               <View
@@ -100,7 +106,7 @@ const MainContainer = ({ route }) => {
         />
         <Tab.Screen
           name={detailsName}
-          children={() => <DetailsScreen id={id} />}
+          children={() => <MapScreen car={car} />}
           options={{
             tabBarIcon: ({ focused }) => (
               <Image
@@ -118,7 +124,7 @@ const MainContainer = ({ route }) => {
         />
         <Tab.Screen
           name={settingsName}
-          children={() => <SettingsScreen id={id} />}
+          children={() => <SettingsScreen car={car} />}
           options={{
             tabBarIcon: ({ focused }) => (
               <View

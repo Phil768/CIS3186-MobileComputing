@@ -10,6 +10,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
 // Logout functionality
+
 const logout = () => {
   auth
     .signOut()
@@ -67,10 +68,10 @@ const App = () => {
       // const user = auth.currentUser;
       console.log("Logged in: " + isLoggedIn);
       //console.log("User details: " + user.email);
-      return "Login";
+      return "List";
     } else {
       console.log("Logged in: " + isLoggedIn);
-      return "List";
+      return "Login";
     }
   };
 

@@ -12,7 +12,7 @@ import { db, auth } from "../../configurations/index";
 import { collection, query, getDocs } from "firebase/firestore";
 
 const CarLists = ({ navigation }) => {
-  //const currentUser = auth.currentUser;
+  const currentUser = auth.currentUser;
   //console.log("Current user email: " + currentUser.email);
   const [loading, setLoading] = React.useState(true); // Set loading to true on component mount
   const [cars, setCars] = React.useState([]); // Initial empty array of cars
@@ -34,12 +34,12 @@ const CarLists = ({ navigation }) => {
     console.log("Iterating through querySnapshot " + querySnapshot);
     querySnapshot.forEach((documentSnapshot) => {
       var data = documentSnapshot.data();
-      console.log(data.id);
+      console.log(documentSnapshot.id);
       console.log("Data: " + data);
       if (data.email === currentUser.email) {
         cars.push({
           ...documentSnapshot.data(),
-          key: documentSnapshot.id,
+          id: documentSnapshot.id,
         });
       }
     });
@@ -71,18 +71,20 @@ const CarLists = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <FlatList
         data={cars}
-        keyExtractor={(item) => item.key}
+        keyExtractor={(item) => item.id}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate("MainContainer");
+              navigation.navigate("MainContainer", {
+                car: item
+              });
             }}
           >
             <Text style={styles.item}>
-              Name: {item.Name}
+              Name: {item.name}
               Email: {item.email}
               Key: {item.key}
             </Text>
