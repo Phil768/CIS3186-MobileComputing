@@ -5,7 +5,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
-// Classes 
+// Classes
 import HomeScreen from "./screens/HomeScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import MapScreen from "./screens/MapScreen";
@@ -40,9 +40,9 @@ const CustomTabBarButton = ({ children, onPress, focused }) => (
   </TouchableOpacity>
 );
 
-const MainContainer = ({ route }) => {
+const MainContainer = ({ route, navigation }) => {
   //Storing the selected id in a variable.
-  console.log('route?.params:', route?.params);
+  console.log("route?.params:", route?.params);
   const { car } = route?.params || {};
   return (
     // Navigation method.
@@ -124,7 +124,7 @@ const MainContainer = ({ route }) => {
         />
         <Tab.Screen
           name={settingsName}
-          children={() => <SettingsScreen car={car} />}
+          children={() => <SettingsScreen car={car} navigation={navigation} />}
           options={{
             tabBarIcon: ({ focused }) => (
               <View

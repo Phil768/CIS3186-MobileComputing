@@ -6,6 +6,7 @@ import MainContainer from "./Navigation/MainContainer";
 import CarLists from "./Navigation/screens/CarLists";
 import AddCarToList from "./Navigation/screens/AddCarToList";
 import LoginSignupPage from "./Navigation/screens/LoginSignup";
+import SettingsScreen from "./Navigation/screens/SettingsScreen";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
@@ -20,6 +21,18 @@ const logout = () => {
     .catch(function (error) {
       console.error("Error signing out: ", error);
     });
+};
+
+const checkLoginStatus = () => {
+  auth.onAuthStateChanged((user) => {
+    if (user) {
+      setIsLoggedIn(true);
+      storeData(isLoggedIn);
+    } else {
+      setIsLoggedIn(false);
+      storeData(isLoggedIn);
+    }
+  });
 };
 
 const Stack = createStackNavigator();
@@ -46,24 +59,11 @@ const App = () => {
   };
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (user) {
-        setIsLoggedIn(true);
-        storeData(isLoggedIn);
-      } else {
-        setIsLoggedIn(false);
-        storeData(isLoggedIn);
-      }
-    });
-
-    // Unsubscribe from the listener when the component unmounts
-    return unsubscribe;
+    checkLoginStatus;
+    getData();
   }, []);
 
   const initialRoute = () => {
-    console.log("HELLO");
-    getData();
-    console.log("Status:" + isLoggedIn);
     if (isLoggedIn) {
       // const user = auth.currentUser;
       console.log("Logged in: " + isLoggedIn);
@@ -94,6 +94,7 @@ const App = () => {
           name="MainContainer"
           component={MainContainer}
         />
+        <Stack.Screen name="Settings" component={SettingsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
