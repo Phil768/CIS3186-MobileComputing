@@ -45,8 +45,6 @@ export default function MapScreen({ navigation }) {
             style={styles.button}
           />
       </View>
-      
-
     </View>
   );
 }

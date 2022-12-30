@@ -12,7 +12,7 @@ import MapScreen from "./screens/MapScreen";
 
 // Screen names
 const homeName = "Home";
-const detailsName = "Details";
+const detailsName = "Map";
 const settingsName = "Settings";
 
 const Tab = createBottomTabNavigator();
