@@ -11,6 +11,7 @@ export default function HomeScreen(props) {
   const [kmYearDriven, setKmYearDriven] = React.useState(0);
   const [kmMonthDriven, setKmMonthDriven] = React.useState(0);
   const [kmDayDriven, setKmDayDriven] = React.useState(0);
+  const [remainingPetrol, setRemainingPetrol] = React.useState(props.car.fuelTankCapacity);
   const [carRuns, setCarRuns] = React.useState([]);
   const currentUser = auth.currentUser;
   const today = new Date();
@@ -83,11 +84,11 @@ export default function HomeScreen(props) {
       console.log('Total distance travelled:', totalDistanceTravelled);
       const docRef = addDoc(collection(db, "CarRuns"), {
         carId: props.car.id,
-        day: todaysDay,
-        isActive: true,
         kmDriven: totalDistanceTravelled,
+        day: todaysDay,      
         month: todaysMonth,
-        year: todaysYear
+        year: todaysYear,
+        isActive: true
       });
     }
     
@@ -123,7 +124,7 @@ export default function HomeScreen(props) {
     const query = db
       .collection('CarRuns')
       .where("carId", "==", props.car.id)
-      .where("year", "==", todaysYear)
+      .where("year", "==", todaysYear);
 
     const querySnapshot = await getDocs(query);
 
@@ -172,12 +173,34 @@ export default function HomeScreen(props) {
     setKmDayDriven(kmDayDriven);
   };
 
+  const getCurrentFuelData = async() => {
+    let currentPetrolUsed = 0;
+    const query = db
+      .collection('CarRuns')
+      .where("carId", "==", props.car.id)
+      .where("isActive", "==", true);
+
+    const querySnapshot = await getDocs(query);
+
+    querySnapshot.forEach((documentSnapshot) => {
+      var data = documentSnapshot.data();
+      // console.log(data.kmDriven);
+      // console.log(props.car.consumptionPerKm);
+      currentPetrolUsed = currentPetrolUsed + (data.kmDriven * props.car.consumptionPerKm);
+    });
+    
+    // console.log(currentPetrolUsed);
+    
+    setRemainingPetrol(props.car.fuelTankCapacity - currentPetrolUsed);
+  }
+
   // Using react's useEffect in order to get the data automatically once the page has loaded.
   React.useEffect(() => {
     getCarData();
     getThisYearsCarRunsData();
     getThisMonthsCarRunsData();
     getTodaysCarRunsData();
+    getCurrentFuelData();
   });
 
   return (
@@ -187,8 +210,12 @@ export default function HomeScreen(props) {
         justifyContent: "center",
       }}
     >
-      <Text>{car.name}</Text>
-      <Text>{car.email}</Text>
+      <Text>Car name: {car.name}</Text>
+      <Text>Year: {car.year}</Text>
+      <Text>Consumption (L) per KM: {car.consumptionPerKm}</Text>
+      <Text>Fuel Tank Capacity (L): {car.fuelTankCapacity}</Text>
+      <Text>Engine: {car.engine}</Text>
+      <Text>Current Fuel: {remainingPetrol}/{props.car.fuelTankCapacity}</Text>
       <Text>KM Driven (this year): {kmYearDriven}</Text>
       <Text>KM Driven (this month): {kmMonthDriven}</Text>
       <Text>KM Driven (today): {kmDayDriven}</Text>

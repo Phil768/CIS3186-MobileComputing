@@ -15,7 +15,7 @@ const AddCarToList = ({ navigation }) => {
     // Only allow to add new car if car does not exist already
     await db
       .collection("Cars")
-      .where("name", "==", "Car One")
+      .where("name", "==", "Volkswagen Golf")
       .where("email", "==", currentUser.email)
       .get()
       .then((snapshot) => {
@@ -30,16 +30,19 @@ const AddCarToList = ({ navigation }) => {
         console.log("Error getting documents", err);
       });
 
-    if (carOneAlreadyExists) {
-    } else {
+    if (!carOneAlreadyExists) {
       // Add to new car to Cars collection
       const docRef = await addDoc(collection(db, "Cars"), {
-        name: "Car One",
+        name: "Volkswagen Golf",
         email: currentUser.email,
-      });
-      //Navigating back to the list page.
-      navigation.navigate("List");
+        year: 2020,
+        consumptionPerKm: 0.054,
+        fuelTankCapacity: 50,
+        engine: 1.4
+      });     
     }
+    //Navigating back to the list page.
+    navigation.navigate("List");
   };
 
   let addCarTwo = async () => {
@@ -48,7 +51,7 @@ const AddCarToList = ({ navigation }) => {
     // Only allow to add new car if car does not exist already
     await db
       .collection("Cars")
-      .where("name", "==", "Car Two")
+      .where("name", "==", "Toyota Starlet")
       .where("email", "==", currentUser.email)
       .get()
       .then((snapshot) => {
@@ -63,85 +66,37 @@ const AddCarToList = ({ navigation }) => {
         console.log("Error getting documents", err);
       });
 
-    if (carTwoAlreadyExists) {
-    } else {
+    if (!carTwoAlreadyExists) {
       // Add to new car to Cars collection
       const docRef = await addDoc(collection(db, "Cars"), {
-        name: "Car Two",
+        name: "Toyota Starlet",
         email: currentUser.email,
+        year: 1998,
+        consumptionPerKm: 0.057,
+        fuelTankCapacity: 45,
+        engine: 1.3
       });
-      //Navigating back to the list page.
-      navigation.navigate("List");
     }
+    //Navigating back to the list page.
+    navigation.navigate("List");
   };
 
-  let addCarThree = async () => {
-    var carThreeAlreadyExists = false;
-
-    // Only allow to add new car if car does not exist already
-    await db
-      .collection("Cars")
-      .where("name", "==", "Car Three")
-      .where("email", "==", currentUser.email)
-      .get()
-      .then((snapshot) => {
-        if (snapshot.size > 0) {
-          console.log("Document already exists!");
-          carThreeAlreadyExists = true;
-          console.log(carThreeAlreadyExists);
-        } else {
-          console.log("Document does not exist!");
-        }
-      })
-      .catch((err) => {
-        console.log("Error getting documents", err);
-      });
-
-    console.log(carThreeAlreadyExists);
-
-    if (carThreeAlreadyExists) {
-      console.log("Cannot add Car three.");
-    } else {
-      // Add to new car to Cars collection
-      const docRef = await addDoc(collection(db, "Cars"), {
-        name: "Car Three",
-        email: currentUser.email,
-      });
-      //Navigating back to the list page.
-      navigation.navigate("List");
-    }
-  };
   return (
     <SafeAreaView style={{ margin: 50 }}>
       <Button
-        title="Add Car 1"
+        title="2020 Volkswagen Golf"
         onPress={() => {
           addCarOne();
         }}
       />
       <Button
-        title="Add Car 2"
+        title="1998 Toyota Starlet"
         onPress={() => {
           addCarTwo();
-        }}
-      />
-      <Button
-        title="Add Car 3"
-        onPress={() => {
-          addCarThree();
         }}
       />
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  input: {
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
-  },
-});
 
 export default AddCarToList;

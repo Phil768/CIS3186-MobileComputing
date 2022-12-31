@@ -85,8 +85,6 @@ const CarLists = ({ navigation }) => {
           >
             <Text style={styles.item}>
               Name: {item.name}
-              Email: {item.email}
-              Key: {item.key}
             </Text>
           </TouchableOpacity>
         )}

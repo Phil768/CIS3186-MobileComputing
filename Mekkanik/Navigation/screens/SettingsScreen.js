@@ -1,6 +1,8 @@
 import * as React from "react";
 import { View, Text, Dimensions, Button } from "react-native";
 import { getAuth, signOut } from "firebase/auth";
+import { db } from "../../configurations/index";
+import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
 
 /*
 
@@ -11,9 +13,11 @@ Reset car button - reset values of currently selected car - car fuel and oil lev
 */
 
 export default function SettingsScreen(props) {
+
   const changeCar = () => {
     props.navigation.navigate("List");
   };
+
   const logOut = () => {
     const auth = getAuth();
     signOut(auth)
@@ -22,6 +26,30 @@ export default function SettingsScreen(props) {
       })
       .catch((error) => {
         console.log(error);
+      });
+  };
+
+  const resetCar = async() => {
+    const batch = db.batch();
+
+    const query = db
+      .collection('CarRuns')
+      .where("carId", "==", props.car.id)
+      .where("isActive", "==", true);
+
+    const querySnapshot = await getDocs(query);
+
+    querySnapshot.forEach((documentSnapshot) => {
+      let carRun = db.collection('CarRuns').doc(documentSnapshot.id);
+      batch.update(carRun, {isActive: false });
+    });
+
+    batch.commit()
+      .then(() => {
+        console.log('Batch successfully committed!');
+      })
+      .catch((error) => {
+        console.error('Error committing batch: ', error);
       });
   };
 
@@ -35,11 +63,7 @@ export default function SettingsScreen(props) {
     >
       <Button title="Logout" onPress={logOut} />
       <Button title="Change car" onPress={changeCar} />
-      <Text>Reset car button to come here</Text>
-      <Text>
-        To see the functionality of these buttons look at comments inside the
-        code!
-      </Text>
+      <Button title="Reset Car" onPress={resetCar} />
     </View>
   );
 }
