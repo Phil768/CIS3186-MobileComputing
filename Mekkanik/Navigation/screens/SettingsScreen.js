@@ -1,5 +1,6 @@
 import * as React from "react";
-import { View, Text, Dimensions } from "react-native";
+import { View, Text, Dimensions, Button } from "react-native";
+import { getAuth, signOut } from "firebase/auth";
 
 /*
 
@@ -9,7 +10,21 @@ Reset car button - reset values of currently selected car - car fuel and oil lev
 
 */
 
-export default function SettingsScreen({ navigation }) {
+export default function SettingsScreen(props) {
+  const changeCar = () => {
+    props.navigation.navigate("List");
+  };
+  const logOut = () => {
+    const auth = getAuth();
+    signOut(auth)
+      .then(() => {
+        props.navigation.navigate("Login");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   return (
     <View
       style={{
@@ -18,11 +33,13 @@ export default function SettingsScreen({ navigation }) {
         justifyContent: "center",
       }}
     >
-      <Text>Logout button to come here</Text>
-      <Text>Change car button to come here</Text>
+      <Button title="Logout" onPress={logOut} />
+      <Button title="Change car" onPress={changeCar} />
       <Text>Reset car button to come here</Text>
-      <Text>To see the functionality of these buttons look at comments inside the code!</Text>
-      
+      <Text>
+        To see the functionality of these buttons look at comments inside the
+        code!
+      </Text>
     </View>
   );
 }

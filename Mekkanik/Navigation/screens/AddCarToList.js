@@ -3,7 +3,7 @@ import { StyleSheet, TextInput, Button, SafeAreaView } from "react-native";
 import { collection, addDoc } from "firebase/firestore";
 import { auth, db } from "../../configurations/index";
 
-const AddCarToList = () => {
+const AddCarToList = ({ navigation }) => {
   // Details of current logged in user
   const currentUser = auth.currentUser;
 
@@ -37,8 +37,8 @@ const AddCarToList = () => {
         name: "Car One",
         email: currentUser.email,
       });
-
-      // Implement functionality to navigate to main screen
+      //Navigating back to the list page.
+      navigation.navigate("List");
     }
   };
 
@@ -70,8 +70,8 @@ const AddCarToList = () => {
         name: "Car Two",
         email: currentUser.email,
       });
-
-      // Implement functionality to navigate to main screen
+      //Navigating back to the list page.
+      navigation.navigate("List");
     }
   };
 
@@ -107,8 +107,8 @@ const AddCarToList = () => {
         name: "Car Three",
         email: currentUser.email,
       });
-
-      // Implement functionality to navigate to main screen
+      //Navigating back to the list page.
+      navigation.navigate("List");
     }
   };
   return (
