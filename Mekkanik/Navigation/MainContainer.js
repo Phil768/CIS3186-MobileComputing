@@ -1,24 +1,24 @@
-// Imports required
+//Imports required
 import * as React from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from "react-native-vector-icons/Ionicons";
-
-// Classes
+// lasses
 import HomeScreen from "./screens/HomeScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import MapScreen from "./screens/MapScreen";
-
-// Screen names
+//Screen names
 const homeName = "Home";
 const detailsName = "Map";
 const settingsName = "Settings";
-
+//Creating a new bottom tab navigator.
 const Tab = createBottomTabNavigator();
-
+//Creating a custom tab bar button which would add more style and aesthetic.
 const CustomTabBarButton = ({ children, onPress, focused }) => (
+  //Touchable opacity is used instead of button since it allows more styling options.
   <TouchableOpacity
+    //Styling
     style={{
       top: -20,
       justifyContent: "center",
@@ -27,7 +27,9 @@ const CustomTabBarButton = ({ children, onPress, focused }) => (
     }}
     onPress={onPress}
   >
+    //Adding a personalised view to the touchable opacity.
     <View
+      //Style
       style={{
         width: 70,
         height: 70,
@@ -39,7 +41,7 @@ const CustomTabBarButton = ({ children, onPress, focused }) => (
     </View>
   </TouchableOpacity>
 );
-
+//Main function for this screen.
 const MainContainer = ({ route, navigation }) => {
   //Storing the selected id in a variable.
   console.log("route?.params:", route?.params);
@@ -72,6 +74,7 @@ const MainContainer = ({ route, navigation }) => {
         {/*The below are the options which will be present in the bottom navigation*/}
         <Tab.Screen
           name={homeName}
+          //Passing props.
           children={() => <HomeScreen car={car} />}
           options={{
             tabBarIcon: ({ focused }) => (
@@ -82,6 +85,7 @@ const MainContainer = ({ route, navigation }) => {
                   top: 10,
                 }}
               >
+                //Adding personalised image.
                 <Image
                   source={require("../assets/home.png")}
                   resizeMode="contain"
@@ -91,6 +95,7 @@ const MainContainer = ({ route, navigation }) => {
                     tintColor: focused ? "red" : "grey",
                   }}
                 />
+                //Adding text.
                 <Text
                   style={{
                     color: focused ? "red" : "grey",
@@ -106,9 +111,11 @@ const MainContainer = ({ route, navigation }) => {
         />
         <Tab.Screen
           name={detailsName}
+          //Passing the props.
           children={() => <MapScreen car={car} />}
           options={{
             tabBarIcon: ({ focused }) => (
+              //Adding custom image.
               <Image
                 source={require("../assets/dashboard.png")}
                 resizeMode="contain"
@@ -124,6 +131,7 @@ const MainContainer = ({ route, navigation }) => {
         />
         <Tab.Screen
           name={settingsName}
+          //Passing the props.
           children={() => <SettingsScreen car={car} navigation={navigation} />}
           options={{
             tabBarIcon: ({ focused }) => (
@@ -134,6 +142,7 @@ const MainContainer = ({ route, navigation }) => {
                   top: 10,
                 }}
               >
+                //Adding custom image.
                 <Image
                   source={require("../assets/settings.png")}
                   resizeMode="contain"
@@ -143,6 +152,7 @@ const MainContainer = ({ route, navigation }) => {
                     tintColor: focused ? "red" : "grey",
                   }}
                 />
+                //Adding custom text.
                 <Text
                   style={{
                     color: focused ? "red" : "grey",
@@ -160,7 +170,7 @@ const MainContainer = ({ route, navigation }) => {
     </NavigationContainer>
   );
 };
-
+//Creating styles.
 const style = StyleSheet.create({
   shadow: {
     shadowColor: "#7F5DF0",
@@ -173,5 +183,5 @@ const style = StyleSheet.create({
     elevation: 5,
   },
 });
-
+//Export function to be displayed on screen.
 export default MainContainer;

@@ -4,16 +4,14 @@ import { collection, addDoc } from "firebase/firestore";
 import { auth, db } from "../../configurations/index";
 
 const AddCarToList = ({ navigation }) => {
-  // Details of current logged in user
+  //Details of current logged in user
   const currentUser = auth.currentUser;
-
-  // Adding the data to the database.
-
+  //Adding the data to the database.
   let addCarOne = async () => {
     var carOneAlreadyExists = false;
-
-    // Only allow to add new car if car does not exist already
+    //Only allow to add new car if car does not exist already
     await db
+      //Accessing the databse and getting the corresponding infomation if all the conditions are met.
       .collection("Cars")
       .where("name", "==", "Volkswagen Golf")
       .where("email", "==", currentUser.email)
@@ -38,8 +36,8 @@ const AddCarToList = ({ navigation }) => {
         year: 2020,
         consumptionPerKm: 0.054,
         fuelTankCapacity: 50,
-        engine: 1.4
-      });     
+        engine: 1.4,
+      });
     }
     //Navigating back to the list page.
     navigation.navigate("List");
@@ -74,13 +72,13 @@ const AddCarToList = ({ navigation }) => {
         year: 1998,
         consumptionPerKm: 0.057,
         fuelTankCapacity: 45,
-        engine: 1.3
+        engine: 1.3,
       });
     }
     //Navigating back to the list page.
     navigation.navigate("List");
   };
-
+  //Returning the body of the screen.
   return (
     <SafeAreaView style={{ margin: 50 }}>
       <Button
@@ -98,5 +96,5 @@ const AddCarToList = ({ navigation }) => {
     </SafeAreaView>
   );
 };
-
+//Exporting the function to be displayed on screen.
 export default AddCarToList;

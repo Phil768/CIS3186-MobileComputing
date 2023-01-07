@@ -3,21 +3,12 @@ import { View, Text, Dimensions, Button } from "react-native";
 import { getAuth, signOut } from "firebase/auth";
 import { db } from "../../configurations/index";
 import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
-
-/*
-
-Logout button - just logs the user out and navigates to login screen
-Change car button - navigates user to car selection screen
-Reset car button - reset values of currently selected car - car fuel and oil levels back to 100%
-
-*/
-
+//Main function of this screen.
 export default function SettingsScreen(props) {
-
   const changeCar = () => {
     props.navigation.navigate("List");
   };
-
+  //Function to logout and return to the login screen.
   const logOut = () => {
     const auth = getAuth();
     signOut(auth)
@@ -28,31 +19,32 @@ export default function SettingsScreen(props) {
         console.log(error);
       });
   };
-
-  const resetCar = async() => {
+  //Reset the car stats such as fuel and distance.
+  const resetCar = async () => {
     const batch = db.batch();
 
     const query = db
-      .collection('CarRuns')
+      .collection("CarRuns")
       .where("carId", "==", props.car.id)
       .where("isActive", "==", true);
 
     const querySnapshot = await getDocs(query);
 
     querySnapshot.forEach((documentSnapshot) => {
-      let carRun = db.collection('CarRuns').doc(documentSnapshot.id);
-      batch.update(carRun, {isActive: false });
+      let carRun = db.collection("CarRuns").doc(documentSnapshot.id);
+      batch.update(carRun, { isActive: false });
     });
 
-    batch.commit()
+    batch
+      .commit()
       .then(() => {
-        console.log('Batch successfully committed!');
+        console.log("Batch successfully committed!");
       })
       .catch((error) => {
-        console.error('Error committing batch: ', error);
+        console.error("Error committing batch: ", error);
       });
   };
-
+  //Returning the main body of the function to be displayed on screen.
   return (
     <View
       style={{

@@ -1,7 +1,7 @@
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
-import 'firebase/compat/firestore';
-
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
+import "firebase/compat/firestore";
+//Firebase configuration to connect with our specific databse.
 const firebaseConfig = {
   apiKey: "AIzaSyBsv_-mOdZhKmecgbtdxUJ8ItSPvPBT1bw",
   authDomain: "firsttest-11ded.firebaseapp.com",
@@ -10,12 +10,10 @@ const firebaseConfig = {
   messagingSenderId: "431919907848",
   appId: "1:431919907848:web:ce9766e08564f696133dbd",
 };
-
 // Use this to initialize the firebase App
 const firebaseApp = firebase.initializeApp(firebaseConfig);
-
 // Use these for db & auth
 const db = firebaseApp.firestore();
 const auth = firebase.auth();
-
+//Export variables to be used by other functions.
 export { auth, db };
