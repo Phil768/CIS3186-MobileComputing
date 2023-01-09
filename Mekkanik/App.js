@@ -10,6 +10,8 @@ import SettingsScreen from "./Navigation/screens/SettingsScreen";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
+
+
 // Logout functionality
 
 const logout = () => {
@@ -76,6 +78,7 @@ const App = () => {
   };
 
   return (
+    
     <NavigationContainer independent={true}>
       <Stack.Navigator initialRouteName={initialRoute()}>
         <Stack.Screen name="Login" component={LoginSignupPage} />
