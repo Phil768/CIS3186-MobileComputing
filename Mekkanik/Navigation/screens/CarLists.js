@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   RefreshControl,
   SafeAreaView,
+  ImageBackground
 } from "react-native";
 import * as React from "react";
 import { db, auth } from "../../configurations/index";
@@ -17,6 +18,7 @@ const CarLists = ({ navigation }) => {
   const [loading, setLoading] = React.useState(true); // Set loading to true on component mount
   const [cars, setCars] = React.useState([]); // Initial empty array of cars
   const [refreshing, setRefreshing] = React.useState(false);
+  const imageBg = require("../../assets/imageBg.png");
 
   // Seeing if the cars are updating.
 
@@ -28,6 +30,9 @@ const CarLists = ({ navigation }) => {
     const q = query(collection(db, "Cars"));
     const querySnapshot = await getDocs(q);
     const cars = [];
+
+    
+
 
     // Iterating through each document.
 
@@ -68,7 +73,12 @@ const CarLists = ({ navigation }) => {
     return <ActivityIndicator />;
   }
   return (
-    <SafeAreaView style={styles.container}>
+    <ImageBackground
+  source={imageBg}
+  style={{resizeMode: "cover",
+          overflow: "hidden",
+          flex: 1}}>
+    <SafeAreaView style={styles.container} >
       <FlatList
         data={cars}
         keyExtractor={(item) => item.id}
@@ -90,13 +100,13 @@ const CarLists = ({ navigation }) => {
         )}
       />
     </SafeAreaView>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     felx: 1,
-    backgroundColor: "white",
     paddingTop: 40,
     paddingHorizontal: 10,
   },
@@ -107,14 +117,17 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     marginTop: 20,
     borderRadius: 30,
-    borderWidth: 1,
+    borderWidth: 2,
     borderBottomColor: "black",
+    backgroundColor: '#f5f5f5'
+    
   },
   input: {
     height: 40,
     margin: 12,
     borderWidth: 1,
     padding: 10,
+    
   },
 });
 
