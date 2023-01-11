@@ -90,12 +90,12 @@ const MainContainer = ({ route, navigation }) => {
                   style={{
                     width: 25,
                     height: 25,
-                    tintColor: focused ? "red" : "grey",
+                    tintColor: focused ? "orange" : "grey",
                   }}
                 />
                 <Text
                   style={{
-                    color: focused ? "red" : "grey",
+                    color: focused ? "orange" : "grey",
                     fontSize: 12,
                     top: 5,
                   }}
@@ -119,7 +119,7 @@ const MainContainer = ({ route, navigation }) => {
                 style={{
                   width: 30,
                   height: 30,
-                  tintColor: focused ? "red" : "grey",
+                  tintColor: focused ? "orange" : "grey",
                 }}
               />
             ),
@@ -145,12 +145,12 @@ const MainContainer = ({ route, navigation }) => {
                   style={{
                     width: 25,
                     height: 25,
-                    tintColor: focused ? "red" : "grey",
+                    tintColor: focused ? "orange" : "grey",
                   }}
                 />
                 <Text
                   style={{
-                    color: focused ? "red" : "grey",
+                    color: focused ? "orange" : "grey",
                     fontSize: 12,
                     top: 5,
                   }}

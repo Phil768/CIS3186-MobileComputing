@@ -8,6 +8,7 @@ import {
   ImageBackground,
   StyleSheet,
   TouchableOpacity,
+  Image,
 } from "react-native";
 import firebase from "firebase/compat/app";
 import { auth, db } from "../../configurations/index";
@@ -18,8 +19,9 @@ const LoginSignupPage = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  //Getting the image for the background.
   const imageBg = require("../../assets/imageBg.png");
-
+  //When the user successfully logs in.
   handleLogin = () => {
     auth
       .signInWithEmailAndPassword(email, password)
@@ -68,12 +70,20 @@ const LoginSignupPage = ({ navigation }) => {
           secureTextEntry
           style={styles.textInp2}
         />
-
-        <View style={styles.button}>
-          <Button onPress={handleLogin} title="Login" color={"#404756"} />
+        <View>
+          <TouchableOpacity onPress={handleLogin} style={styles.button}>
+            <Text style={styles.buttonText}>Login</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleSignup} style={styles.button}>
+            <Text style={styles.buttonText}>Sign up</Text>
+          </TouchableOpacity>
         </View>
-        <View style={styles.button}>
-          <Button onPress={handleSignup} title="Sign up" color={"#404756"} />
+        <View style={styles.container}>
+          <Image
+            source={require("../../assets/sedan.png")}
+            style={styles.image}
+          />
+          <Text style={styles.imageText}>Mekkanik</Text>
         </View>
       </SafeAreaView>
     </ImageBackground>
@@ -82,6 +92,8 @@ const LoginSignupPage = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   textInp1: {
+    fontSize: 20,
+    height: 45,
     borderRadius: 10,
     padding: 7,
     marginLeft: 10,
@@ -90,15 +102,43 @@ const styles = StyleSheet.create({
     backgroundColor: "#DDDDDD",
   },
   textInp2: {
+    height: 45,
+    fontSize: 20,
     borderRadius: 10,
     padding: 7,
     margin: 10,
     backgroundColor: "#DDDDDD",
   },
   button: {
-    marginLeft: 50,
-    marginRight: 50,
-    marginTop: 15,
+    backgroundColor: "#545150",
+    height: 35,
+    alignItems: "center",
+    justifyContent: "center",
+    marginHorizontal: 40,
+    marginTop: 18,
+    borderRadius: 8,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 18,
+    fontFamily: "Helvetica",
+    fontWeight: "bold",
+  },
+  container: {
+    marginTop: 81,
+    alignItems: "center",
+  },
+  image: {
+    height: 80,
+    width: 211,
+    marginBottom: 20,
+  },
+  imageText: {
+    color: "#545150",
+    fontSize: 35,
+    fontFamily: "Helvetica",
+    fontWeight: "bold",
+    fontStyle: "italic",
   },
 });
 
