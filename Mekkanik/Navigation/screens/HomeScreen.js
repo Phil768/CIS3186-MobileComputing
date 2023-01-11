@@ -26,8 +26,7 @@ export default function HomeScreen(props) {
   const todaysMonth = today.getMonth() + 1;
   const todaysYear = today.getFullYear();
 
-  const [currentLocation, setCurrentLocation] = React.useState(null);
-  const [previousLocation, setPreviousLocation] = React.useState(null);
+
 
   const imageBg = require("../../assets/imageBg.png");
 
