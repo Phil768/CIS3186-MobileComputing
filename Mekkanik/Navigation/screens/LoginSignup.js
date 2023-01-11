@@ -1,5 +1,14 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, SafeAreaView, ImageBackground, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  SafeAreaView,
+  ImageBackground,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import firebase from "firebase/compat/app";
 import { auth, db } from "../../configurations/index";
 import CarLists from "./CarLists";
@@ -40,14 +49,17 @@ const LoginSignupPage = ({ navigation }) => {
 
   return (
     <ImageBackground
-  source={imageBg}
-  style={{resizeMode: "cover",
-          overflow: "hidden",
-          flex: 1}}>
-
+      source={imageBg}
+      style={{ resizeMode: "cover", overflow: "hidden", flex: 1 }}
+    >
       <SafeAreaView>
         {error && <Text>{error}</Text>}
-        <TextInput placeholder="Email" value={email} onChangeText={setEmail} style={styles.textInp1}/>
+        <TextInput
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
+          style={styles.textInp1}
+        />
         <TextInput
           placeholder="Password"
           value={password}
@@ -57,12 +69,11 @@ const LoginSignupPage = ({ navigation }) => {
         />
 
         <View style={styles.button}>
-         <Button onPress={handleLogin} title="Login" color={'#404756'} />
-         </View>
-         <View style={styles.button}>
-        <Button onPress={handleSignup} title="Sign up" color={'#404756'}/>
+          <Button onPress={handleLogin} title="Login" color={"#404756"} />
         </View>
-        
+        <View style={styles.button}>
+          <Button onPress={handleSignup} title="Sign up" color={"#404756"} />
+        </View>
       </SafeAreaView>
     </ImageBackground>
   );
@@ -70,29 +81,24 @@ const LoginSignupPage = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   textInp1: {
-    borderRadius: 10, 
+    borderRadius: 10,
     padding: 7,
     marginLeft: 10,
     marginTop: 100,
     marginRight: 10,
     backgroundColor: "#DDDDDD",
-    
   },
   textInp2: {
-    borderRadius: 10, 
+    borderRadius: 10,
     padding: 7,
     margin: 10,
     backgroundColor: "#DDDDDD",
   },
-  button:{
+  button: {
     marginLeft: 50,
     marginRight: 50,
-    marginTop: 15
- 
-
-  }
-
-
+    marginTop: 15,
+  },
 });
 
 export default LoginSignupPage;
