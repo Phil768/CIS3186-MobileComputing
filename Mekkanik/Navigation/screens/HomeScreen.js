@@ -1,15 +1,11 @@
 import * as React from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  Button,
-  StyleSheet,
-  RefreshControl,
-} from "react-native";
+import { View, Text, TextInput, Button, StyleSheet, RefreshControl, ImageBackground, ScrollView, Image } from "react-native";
 import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
 import { auth, db } from "../../configurations/index";
-import * as Location from "expo-location";
+import * as Location from 'expo-location';
+import { TouchableOpacity } from "react-native-gesture-handler";
+
+
 
 export default function HomeScreen(props) {
   /*Creating the required state to be used by the below function*/
@@ -29,7 +25,13 @@ export default function HomeScreen(props) {
   const todaysDay = today.getDate();
   const todaysMonth = today.getMonth() + 1;
   const todaysYear = today.getFullYear();
-  //Get the current location of the user before the function loads and store it into a variable.
+
+  const [currentLocation, setCurrentLocation] = React.useState(null);
+  const [previousLocation, setPreviousLocation] = React.useState(null);
+
+  const imageBg = require("../../assets/imageBg.png");
+
+
   React.useEffect(() => {
     (async () => {
       const location = await getCurrentLocation();
@@ -202,24 +204,43 @@ export default function HomeScreen(props) {
   });
   //Returning the main body to be displayed on screen.
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-      }}
-    >
-      <Text>Car name: {car.name}</Text>
-      <Text>Year: {car.year}</Text>
-      <Text>Consumption (L) per KM: {car.consumptionPerKm}</Text>
-      <Text>Fuel Tank Capacity (L): {car.fuelTankCapacity}</Text>
-      <Text>Engine: {car.engine}</Text>
-      <Text>
-        Current Fuel: {remainingPetrol}/{props.car.fuelTankCapacity}
-      </Text>
-      <Text>KM Driven (this year): {kmYearDriven}</Text>
-      <Text>KM Driven (this month): {kmMonthDriven}</Text>
-      <Text>KM Driven (today): {kmDayDriven}</Text>
-    </View>
+    <ImageBackground
+    source={imageBg}
+    style={{resizeMode: "cover",
+            overflow: "hidden",
+            flex: 1}}>
+
+            <ScrollView 
+            contentContainerStyle={{
+              paddingHorizontal: 15
+              
+            }}
+            vertical
+            showsVerticalScrollIndicator={false}
+            >
+
+            <TouchableOpacity style={styles.card}>            
+              <Text>Year: {car.year}</Text>
+              <Text>Consumption (L) per KM: {car.consumptionPerKm}</Text>
+              <Text>Fuel Tank Capacity (L): {car.fuelTankCapacity}</Text>
+              <Text>Engine: {car.engine}</Text>
+
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.card}>           
+              <Text>KM Driven (this year): {kmYearDriven}</Text>
+              <Text>KM Driven (this month): {kmMonthDriven}</Text>
+              <Text>KM Driven (today): {kmDayDriven}</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.card}>            
+            <Text>Current Fuel: {remainingPetrol}/{props.car.fuelTankCapacity}</Text>
+            </TouchableOpacity>
+
+            
+            </ScrollView>
+      
+    </ImageBackground>
   );
 }
 //Creating the styles for this screen.
@@ -230,4 +251,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 10,
   },
+
+  card:{
+    height: 200,
+    width: 300,
+    
+    justifyContent: "center",
+    backgroundColor: "#DDDDDD",
+    margin: 15,
+    borderRadius: 15
+
+  }
 });
