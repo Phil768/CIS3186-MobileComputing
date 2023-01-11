@@ -90,10 +90,7 @@ const App = () => {
   return (
     //Creating a new navigation container.
     <NavigationContainer independent={true}>
-      //Setting the initial route.
       <Stack.Navigator initialRouteName={initialRoute()}>
-        /* * Adding all the screens to the stack navigator which gives them the
-        ability to transition from one another. */
         <Stack.Screen name="Login" component={LoginSignupPage} />
         <Stack.Screen
           name="List"

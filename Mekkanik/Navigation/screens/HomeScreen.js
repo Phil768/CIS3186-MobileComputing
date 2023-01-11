@@ -208,7 +208,6 @@ export default function HomeScreen(props) {
         justifyContent: "center",
       }}
     >
-      //Displaying the computed data.
       <Text>Car name: {car.name}</Text>
       <Text>Year: {car.year}</Text>
       <Text>Consumption (L) per KM: {car.consumptionPerKm}</Text>

@@ -63,8 +63,6 @@ const CarLists = ({ navigation }) => {
   return (
     //View to hold the list.
     <SafeAreaView style={styles.container}>
-      //Creating FlatList instead of normal list to get better access to the
-      elements.
       <FlatList
         data={cars}
         keyExtractor={(item) => item.id}

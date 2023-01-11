@@ -27,7 +27,6 @@ const CustomTabBarButton = ({ children, onPress, focused }) => (
     }}
     onPress={onPress}
   >
-    //Adding a personalised view to the touchable opacity.
     <View
       //Style
       style={{
@@ -85,7 +84,6 @@ const MainContainer = ({ route, navigation }) => {
                   top: 10,
                 }}
               >
-                //Adding personalised image.
                 <Image
                   source={require("../assets/home.png")}
                   resizeMode="contain"
@@ -95,7 +93,6 @@ const MainContainer = ({ route, navigation }) => {
                     tintColor: focused ? "red" : "grey",
                   }}
                 />
-                //Adding text.
                 <Text
                   style={{
                     color: focused ? "red" : "grey",
@@ -142,7 +139,6 @@ const MainContainer = ({ route, navigation }) => {
                   top: 10,
                 }}
               >
-                //Adding custom image.
                 <Image
                   source={require("../assets/settings.png")}
                   resizeMode="contain"
@@ -152,7 +148,6 @@ const MainContainer = ({ route, navigation }) => {
                     tintColor: focused ? "red" : "grey",
                   }}
                 />
-                //Adding custom text.
                 <Text
                   style={{
                     color: focused ? "red" : "grey",
