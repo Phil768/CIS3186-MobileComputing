@@ -1,1 +1,0 @@
-In order to access the app properly make sure that you view the React video to intsall all the expo and react dependencies. In order for the navigation to work some dependencies need to be installed aswell. 
