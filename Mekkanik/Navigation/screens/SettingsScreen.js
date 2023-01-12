@@ -13,6 +13,11 @@ import { db } from "../../configurations/index";
 import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
 //Main function of this screen.
 export default function SettingsScreen(props) {
+  const today = new Date();
+  const todaysDay = today.getDate();
+  const todaysMonth = today.getMonth() + 1;
+  const todaysYear = today.getFullYear();
+
   //Getting the image for the background.
   const imageBg = require("../../assets/imageBg.png");
   const changeCar = () => {
@@ -54,6 +59,18 @@ export default function SettingsScreen(props) {
         console.error("Error committing batch: ", error);
       });
   };
+
+  //Mock a moving car - update database with mock values as if car is moving
+  const mockMovingCar = async () => {
+    const docRef = addDoc(collection(db, "CarRuns"), {
+      carId: props.car.id,
+      kmDriven: 50,
+      day: todaysDay,
+      month: todaysMonth,
+      year: todaysYear,
+      isActive: true,
+    });
+  }
   //Returning the main body of the function to be displayed on screen.
   return (
     <ImageBackground
@@ -70,9 +87,12 @@ export default function SettingsScreen(props) {
         <TouchableOpacity onPress={resetCar} style={styles.button}>
           <Text style={styles.buttonText}>Reset Car</Text>
         </TouchableOpacity>
+        <TouchableOpacity onPress={mockMovingCar} style={styles.button}>
+          <Text style={styles.buttonText}>Mock Moving Car</Text>
+        </TouchableOpacity>
       </View>
       <View style={styles.lineBreak}>
-        <Text>Copyright{"\u00A9"} of team 4, CIS3186.</Text>
+        <Text style={styles.buttonText}>Copyright{"\u00A9"} of team 4, CIS3186.</Text>
       </View>
     </ImageBackground>
   );
@@ -96,13 +116,13 @@ const styles = StyleSheet.create({
   },
   container: {
     marginHorizontal: 40,
-    marginTop: 200,
+    marginTop: 170,
     alignItems: "center",
   },
   lineBreak: {
     marginHorizontal: 20,
     marginTop: 170,
-    borderTopColor: "black",
+    borderTopColor: "#FFF",
     borderTopWidth: 1,
   },
 });

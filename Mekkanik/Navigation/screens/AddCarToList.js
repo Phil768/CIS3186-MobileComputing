@@ -1,5 +1,5 @@
 import * as React from "react";
-import { StyleSheet, TextInput, Button, SafeAreaView } from "react-native";
+import { StyleSheet, TextInput, Button, SafeAreaView, Alert } from "react-native";
 import { collection, addDoc } from "firebase/firestore";
 import { auth, db } from "../../configurations/index";
 
@@ -38,6 +38,19 @@ const AddCarToList = ({ navigation }) => {
         fuelTankCapacity: 50,
         engine: 1.4,
       });
+    } else {
+      Alert.alert(
+        "Car Already Added",
+        "You cannot add a car that you already have.",
+        [
+          {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel"
+          },
+          { text: "OK", onPress: () => console.log("OK Pressed") }
+        ]
+      );
     }
     //Navigating back to the list page.
     navigation.navigate("List");
@@ -74,6 +87,19 @@ const AddCarToList = ({ navigation }) => {
         fuelTankCapacity: 45,
         engine: 1.3,
       });
+    } else {
+      Alert.alert(
+        "Car Already Added",
+        "You cannot add a car that you already have.",
+        [
+          {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel"
+          },
+          { text: "OK", onPress: () => console.log("OK Pressed") }
+        ]
+      );
     }
     //Navigating back to the list page.
     navigation.navigate("List");
