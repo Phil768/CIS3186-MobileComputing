@@ -9,10 +9,20 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { getAuth, signOut } from "firebase/auth";
+import firebase from "firebase/app";
 import { db } from "../../configurations/index";
-import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  query,
+  where,
+  doc,
+  getDocs,
+  deleteDoc,
+} from "firebase/firestore";
 //Main function of this screen.
 export default function SettingsScreen(props) {
+  console.log(props.car.id);
   const today = new Date();
   const todaysDay = today.getDate();
   const todaysMonth = today.getMonth() + 1;
@@ -32,6 +42,16 @@ export default function SettingsScreen(props) {
       .catch((error) => {
         console.log(error);
       });
+  };
+  //Deleting the element.
+  const deleteItem = async () => {
+    try {
+      await deleteDoc(doc(db, "Cars", props.car.id));
+      console.log("Document deleted successfully");
+      logOut();
+    } catch (error) {
+      console.error("Error deleting document: ", error);
+    }
   };
   //Reset the car stats such as fuel and distance.
   const resetCar = async () => {
@@ -86,6 +106,9 @@ export default function SettingsScreen(props) {
         <TouchableOpacity onPress={resetCar} style={styles.button}>
           <Text style={styles.buttonText}>Reset Car</Text>
         </TouchableOpacity>
+        <TouchableOpacity onPress={deleteItem} style={styles.button}>
+          <Text style={styles.buttonText}>Delete Car</Text>
+        </TouchableOpacity>
         <TouchableOpacity onPress={mockMovingCar} style={styles.button}>
           <Text style={styles.buttonText}>Mock Moving Car</Text>
         </TouchableOpacity>
@@ -122,7 +145,7 @@ const styles = StyleSheet.create({
   },
   lineBreak: {
     marginHorizontal: 20,
-    marginTop: 170,
+    marginTop: 110,
     borderTopColor: "#FFF",
     borderTopWidth: 1,
   },

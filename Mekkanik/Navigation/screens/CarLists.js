@@ -72,6 +72,8 @@ const CarLists = ({ navigation }) => {
       <SafeAreaView style={styles.container}>
         <FlatList
           data={cars}
+          contentContainerStyle={styles.container}
+          style={styles.list}
           keyExtractor={(item) => item.id}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -85,7 +87,7 @@ const CarLists = ({ navigation }) => {
                 });
               }}
             >
-              <Text style={styles.item}>Name: {item.name}</Text>
+              <Text style={styles.item}>{item.name}</Text>
             </TouchableOpacity>
           )}
         />
@@ -96,17 +98,16 @@ const CarLists = ({ navigation }) => {
 //Creating the main styles for the list.
 const styles = StyleSheet.create({
   container: {
-    felx: 1,
-    paddingTop: 40,
+    flex: 1,
     paddingHorizontal: 10,
   },
   item: {
     marginTop: 20,
-    padding: 30,
-    fontSize: 20,
+    padding: 20,
+    fontSize: 17,
     marginHorizontal: 10,
     marginTop: 20,
-    borderRadius: 30,
+    borderRadius: 0,
     borderWidth: 2,
     borderBottomColor: "black",
     backgroundColor: "#f5f5f5",
@@ -116,6 +117,9 @@ const styles = StyleSheet.create({
     margin: 12,
     borderWidth: 1,
     padding: 10,
+  },
+  list: {
+    paddingBottom: 20,
   },
 });
 //Exporting the function to be viewed in the main screen.

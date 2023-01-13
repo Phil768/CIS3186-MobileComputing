@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, Button } from "react-native";
+import { StyleSheet, Text, View, Button, TouchableOpacity } from "react-native";
 import { auth } from "./configurations/index";
 import MainContainer from "./Navigation/MainContainer";
 import CarLists from "./Navigation/screens/CarLists";
@@ -97,11 +97,23 @@ const App = () => {
           //Passing a navigation prop and adding a button to add a car in the heading of the screen.
           options={({ navigation }) => ({
             headerRight: () => (
-              <Button title="Add" onPress={() => navigation.navigate("Add")} />
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => navigation.navigate("Add")}
+              >
+                <Text style={styles.buttonText}>Add</Text>
+              </TouchableOpacity>
             ),
+            headerLeft: null,
           })}
         />
-        <Stack.Screen name="Add" component={AddCarToList} />
+        <Stack.Screen
+          name="Add"
+          component={AddCarToList}
+          options={() => ({
+            headerLeft: null,
+          })}
+        />
         <Stack.Screen
           options={{ headerShown: false }}
           name="MainContainer"
@@ -112,5 +124,25 @@ const App = () => {
     </NavigationContainer>
   );
 };
+
+const styles = StyleSheet.create({
+  button: {
+    backgroundColor: "#545150",
+    height: 35,
+    alignItems: "center",
+    justifyContent: "center",
+    marginHorizontal: 10,
+    marginTop: 1,
+    padding: 10,
+    borderRadius: 8,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 17,
+    fontFamily: "Helvetica",
+    fontWeight: "bold",
+  },
+});
+
 //Exporting the app to be displayed on screen.
 export default App;
