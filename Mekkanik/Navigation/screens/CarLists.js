@@ -6,7 +6,7 @@ import {
   ActivityIndicator,
   RefreshControl,
   SafeAreaView,
-  ImageBackground
+  ImageBackground,
 } from "react-native";
 import * as React from "react";
 import { db, auth } from "../../configurations/index";
@@ -28,12 +28,7 @@ const CarLists = ({ navigation }) => {
     const q = query(collection(db, "Cars"));
     const querySnapshot = await getDocs(q);
     const cars = [];
-
-    
-
-
     // Iterating through each document.
-
     console.log("Iterating through querySnapshot " + querySnapshot);
     querySnapshot.forEach((documentSnapshot) => {
       var data = documentSnapshot.data();
@@ -71,31 +66,30 @@ const CarLists = ({ navigation }) => {
   //Returning the main body of the function.
   return (
     <ImageBackground
-  source={imageBg}
-  style={{resizeMode: "cover",
-          overflow: "hidden",
-          flex: 1}}>
-    <SafeAreaView style={styles.container} >
-      <FlatList
-        data={cars}
-        keyExtractor={(item) => item.id}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            //Navigating to the navigation container.
-            onPress={() => {
-              navigation.navigate("MainContainer", {
-                car: item,
-              });
-            }}
-          >
-            <Text style={styles.item}>Name: {item.name}</Text>
-          </TouchableOpacity>
-        )}
-      />
-    </SafeAreaView>
+      source={imageBg}
+      style={{ resizeMode: "cover", overflow: "hidden", flex: 1 }}
+    >
+      <SafeAreaView style={styles.container}>
+        <FlatList
+          data={cars}
+          keyExtractor={(item) => item.id}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              //Navigating to the navigation container.
+              onPress={() => {
+                navigation.navigate("MainContainer", {
+                  car: item,
+                });
+              }}
+            >
+              <Text style={styles.item}>Name: {item.name}</Text>
+            </TouchableOpacity>
+          )}
+        />
+      </SafeAreaView>
     </ImageBackground>
   );
 };
@@ -115,15 +109,13 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     borderWidth: 2,
     borderBottomColor: "black",
-    backgroundColor: '#f5f5f5'
-    
+    backgroundColor: "#f5f5f5",
   },
   input: {
     height: 40,
     margin: 12,
     borderWidth: 1,
     padding: 10,
-    
   },
 });
 //Exporting the function to be viewed in the main screen.

@@ -17,7 +17,6 @@ export default function SettingsScreen(props) {
   const todaysDay = today.getDate();
   const todaysMonth = today.getMonth() + 1;
   const todaysYear = today.getFullYear();
-
   //Getting the image for the background.
   const imageBg = require("../../assets/imageBg.png");
   const changeCar = () => {
@@ -70,7 +69,7 @@ export default function SettingsScreen(props) {
       year: todaysYear,
       isActive: true,
     });
-  }
+  };
   //Returning the main body of the function to be displayed on screen.
   return (
     <ImageBackground
@@ -92,7 +91,9 @@ export default function SettingsScreen(props) {
         </TouchableOpacity>
       </View>
       <View style={styles.lineBreak}>
-        <Text style={styles.buttonText}>Copyright{"\u00A9"} of team 4, CIS3186.</Text>
+        <Text style={styles.buttonText}>
+          Copyright{"\u00A9"} of team 4, CIS3186.
+        </Text>
       </View>
     </ImageBackground>
   );
