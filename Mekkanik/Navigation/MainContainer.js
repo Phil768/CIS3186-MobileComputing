@@ -43,7 +43,6 @@ const CustomTabBarButton = ({ children, onPress, focused }) => (
 //Main function for this screen.
 const MainContainer = ({ route, navigation }) => {
   //Storing the selected id in a variable.
-  console.log("route?.params:", route?.params);
   const { car } = route?.params || {};
   return (
     // Navigation method.
