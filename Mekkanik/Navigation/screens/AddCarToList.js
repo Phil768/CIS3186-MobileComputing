@@ -47,7 +47,6 @@ const AddCarToList = ({ navigation }) => {
     });
     //Updating the state.
     setCars(c);
-    setLoading(false);
   };
   //Loading the data before the app loads.
   React.useEffect(() => {

@@ -26,34 +26,8 @@ export default function HomeScreen(props) {
   const todaysMonth = today.getMonth() + 1;
   const todaysYear = today.getFullYear();
 
-
-
   const imageBg = require("../../assets/imageBg.png");
 
-
-  React.useEffect(() => {
-    (async () => {
-      const location = await getCurrentLocation();
-      console.log(location);
-      setCurrentLocation(location);
-    })();
-  }, []);
-  //Calculating the corresponfing distance before the main function loads.
-  React.useEffect(() => {
-    if (previousLocation && currentLocation) {
-      //Calculate the distance between the previous location and the current location
-      const distance = calculateDistance(previousLocation, currentLocation);
-      //If the distance is less than a certain threshold (e.g. 10 meters), we can assume the car has stopped
-      if (distance < 10) {
-        console.log("The car has stopped");
-      }
-    }
-  }, [currentLocation]);
-  //Setting the previos location to the current location every time the current location is updated.
-  React.useEffect(() => {
-    setPreviousLocation(currentLocation);
-  }, [currentLocation]);
-  /*Getting the current location*/
   async function getCurrentLocation() {
     const { status } = await Location.requestBackgroundPermissionsAsync();
     if (status !== "granted") {
@@ -68,7 +42,34 @@ export default function HomeScreen(props) {
       longitude: location.coords.longitude,
     };
   }
-  //Calculate the distance traveled.
+
+  React.useEffect(() => {
+    async function refreshLocation() {
+      const location = await getCurrentLocation();
+      setCurrentLocation(location);
+      console.log('Current location:', location);
+    }
+    refreshLocation();
+    const intervalId = setInterval(() => {
+      refreshLocation();
+    }, 5000)
+    return () => clearInterval(intervalId);
+  }, [])
+
+  // Calculating the corresponding distance everytime our current location changes
+  React.useEffect(() => {
+    if (previousLocation && currentLocation) {
+      //Calculate the distance between the previous location and the current location
+      const distance = calculateDistance(previousLocation, currentLocation);
+      //If the distance is less than a certain threshold (e.g. 10 meters), we can assume the car has stopped
+      if (distance < 10) {
+        console.log("The car has stopped");
+      }
+    }
+    setPreviousLocation(currentLocation);
+  }, [currentLocation]);
+  
+  // Calculate the distance traveled.
   function calculateDistance(loc1, loc2) {
     // Calculate the distance between two locations using the Haversine formula
     // More info: https://en.wikipedia.org/wiki/Haversine_formula
@@ -82,9 +83,9 @@ export default function HomeScreen(props) {
       Math.sin(deltaLat / 2) ** 2 +
       Math.cos(lat1) * Math.cos(lat2) * Math.sin(deltaLon / 2) ** 2;
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    //Getting the total distance travelled.
+    // Getting the total distance travelled.
     var totalDistanceTravelled = parseFloat(((R * c) / 1000).toFixed(2)); //KM
-    //Checking if distance is 0.
+    // Checking if distance is 0.
     if (totalDistanceTravelled > 0) {
       console.log("Total distance travelled:", totalDistanceTravelled);
       const docRef = addDoc(collection(db, "CarRuns"), {
@@ -98,13 +99,10 @@ export default function HomeScreen(props) {
     }
   }
 
-  // console.log('Todays day:', todaysDay);
-  // console.log('Todays month:', todaysMonth);
-  // console.log('Todays year:', todaysYear);
-
-  //Get the document from the database
+  // Get the document from the database
   const documentPath = "Cars/" + props.car.id;
-  //Getting the desired document
+
+  // Getting the desired document
   const getCarData = async () => {
     const docRef = db.doc(documentPath);
     docRef
@@ -120,7 +118,7 @@ export default function HomeScreen(props) {
         console.log("Error getting document:", error);
       });
   };
-  //Getting the distance traveled in the past year.
+  // Getting the distance traveled in the past year.
   const getThisYearsCarRunsData = async () => {
     let kmYearDriven = 0;
     const query = db
@@ -137,7 +135,7 @@ export default function HomeScreen(props) {
 
     setKmYearDriven(kmYearDriven);
   };
-  //Getting the distance traveled in the past month.
+  // Getting the distance traveled in the past month.
   const getThisMonthsCarRunsData = async () => {
     let kmMonthDriven = 0;
     const query = db
@@ -155,7 +153,7 @@ export default function HomeScreen(props) {
 
     setKmMonthDriven(kmMonthDriven);
   };
-  //Getting the distance traveled in the past day.
+  // Getting the distance traveled in the past day.
   const getTodaysCarRunsData = async () => {
     let kmDayDriven = 0;
     const query = db
@@ -174,7 +172,7 @@ export default function HomeScreen(props) {
 
     setKmDayDriven(kmDayDriven);
   };
-  //Calculating the current fuel.
+  // Calculating the current fuel.
   const getCurrentFuelData = async () => {
     let currentPetrolUsed = 0;
     const query = db
@@ -201,7 +199,7 @@ export default function HomeScreen(props) {
     getTodaysCarRunsData();
     getCurrentFuelData();
   });
-  //Returning the main body to be displayed on screen.
+  // Returning the main body to be displayed on screen.
   return (
     <ImageBackground
     source={imageBg}
@@ -227,13 +225,13 @@ export default function HomeScreen(props) {
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.card}>           
-              <Text>KM Driven (this year): {kmYearDriven}</Text>
-              <Text>KM Driven (this month): {kmMonthDriven}</Text>
-              <Text>KM Driven (today): {kmDayDriven}</Text>
+              <Text>KM Driven (this year): {kmYearDriven.toFixed(2)}</Text>
+              <Text>KM Driven (this month): {kmMonthDriven.toFixed(2)}</Text>
+              <Text>KM Driven (today): {kmDayDriven.toFixed(2)}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.card}>            
-            <Text>Current Fuel: {remainingPetrol}/{props.car.fuelTankCapacity}</Text>
+            <Text>Current Fuel: {remainingPetrol.toFixed(2)}/{props.car.fuelTankCapacity}</Text>
             </TouchableOpacity>
 
             
