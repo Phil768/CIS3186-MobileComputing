@@ -10,13 +10,12 @@ export default function MapScreen({ navigation }) {
   const [lat, setLatitude] = useState(35.9375);
   const [nearbyGasStations, setNearbyGasStations] = useState([]);
 
-
   useEffect(() => {
     async function refreshLocation() {
       const location = await getCurrentLocation();
-
+      console.log("LOCATION", location);
       try {
-        if (!location || location === null){
+        if (!location || location === null) {
           setLongitude(14.3754);
           setLatitude(35.9375);
         } else {
@@ -25,35 +24,20 @@ export default function MapScreen({ navigation }) {
           setLongitude(lon);
           setLatitude(lat);
         }
-      } catch (error){
+      } catch (error) {
         console.log(error);
       }
-      
-      
-      console.log('Setting current location.')
-      console.log('Current longitude:', lon);
-      console.log('Current latitude:', lat);
+
+      console.log("Setting current location.");
+      console.log("Current longitude:", lon);
+      console.log("Current latitude:", lat);
     }
     refreshLocation();
     const intervalId = setInterval(() => {
       refreshLocation();
-    }, 5000)
+    }, 5000);
     return () => clearInterval(intervalId);
-  }, [])
-  const handleButtonPress = async () => {
-    console.log('Inside function');
-    if (lon && lat) {
-      console.log('Searching for gas stations.')
-        try {
-            const response = await fetch(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lon}&radius=5000&types=gas_station&key=AIzaSyDvuzOm5knBoIB2G1RFVBhAF-DGyYVaB1E`);
-            const data = await response.json();
-            console.log(data);
-            setNearbyGasStations(data.results);
-        } catch (error) {
-            console.log(error);
-        }
-    }
-  };
+  }, []);
 
   async function getCurrentLocation() {
     const { status } = await Location.requestBackgroundPermissionsAsync();
@@ -61,12 +45,34 @@ export default function MapScreen({ navigation }) {
       console.log("Permission to access location was denied");
       return;
     }
-    const location = await Location.getCurrentPositionAsync({
-      enableHighAccuracy: true,
-    });
+    let location = await Location.getCurrentPositionAsync({});
     return {
       latitude: location.coords.latitude,
       longitude: location.coords.longitude,
+    };
+  }
+  // const location = await Location.getCurrentPositionAsync({
+  //   enableHighAccuracy: true,
+  // });
+  // return {
+  //   latitude: location.coords.latitude,
+  //   longitude: location.coords.longitude,
+  // };
+
+  const handleButtonPress = async () => {
+    console.log("Inside function");
+    if (lon && lat) {
+      console.log("Searching for gas stations.");
+      try {
+        const response = await fetch(
+          `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lon}&radius=5000&types=gas_station&key=AIzaSyDvuzOm5knBoIB2G1RFVBhAF-DGyYVaB1E`
+        );
+        const data = await response.json();
+        console.log(data);
+        setNearbyGasStations(data.results);
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
@@ -83,7 +89,7 @@ export default function MapScreen({ navigation }) {
           longitudeDelta: 0.0421,
         }}
       >
-        {nearbyGasStations.map(gasStation => (
+        {nearbyGasStations.map((gasStation) => (
           <Marker
             key={gasStation.place_id}
             coordinate={{
@@ -93,14 +99,11 @@ export default function MapScreen({ navigation }) {
             title={gasStation.name}
             pinColor={"red"}
             description={gasStation.vicinity}
-          >
-            </Marker>
-            
+          ></Marker>
         ))}
       </MapView>
     </View>
   );
-  
 }
 //Styling for this screen
 const styles = StyleSheet.create({
@@ -110,7 +113,6 @@ const styles = StyleSheet.create({
   },
   button: {
     border: "1px solid black",
-    bottom: 100
+    bottom: 100,
   },
 });
-
