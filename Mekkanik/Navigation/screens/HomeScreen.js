@@ -241,15 +241,19 @@ export default function HomeScreen(props) {
   //Using react's useEffect in order to get the data automatically once the page has loaded.
   React.useEffect(() => {
     getCarData();
-    if (toggle) {
+    getThisYearsCarRunsData();
+    getThisMonthsCarRunsData();
+    getTodaysCarRunsData();
+    getCurrentFuelData();
+    const intervalId = setInterval(() => {
+      getCarData();
       getThisYearsCarRunsData();
       getThisMonthsCarRunsData();
       getTodaysCarRunsData();
       getCurrentFuelData();
-    } else {
-      //do nothing.
-    }
-  }, [toggle]);
+    }, 5000);
+    return () => clearInterval(intervalId);
+  }, []);
   // Returning the main body to be displayed on screen.
   return (
     <ImageBackground
