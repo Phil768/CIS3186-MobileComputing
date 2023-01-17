@@ -81,7 +81,8 @@ export default function SettingsScreen(props) {
 
   //Mock a moving car - update database with mock values as if car is moving
   const mockMovingCar = async () => {
-    const docRef = addDoc(collection(db, "CarRuns"), {
+    console.log("TEST");
+    const docRef = await addDoc(collection(db, "CarRuns"), {
       carId: props.car.id,
       kmDriven: 50,
       day: todaysDay,

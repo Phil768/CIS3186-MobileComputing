@@ -89,6 +89,7 @@ const AddCarToList = ({ navigation }) => {
         consumptionPerKm: car.consumption,
         fuelTankCapacity: car.fueltankCapacity,
         engine: car.engine,
+        toggle: false,
       });
     } else {
       Alert.alert(
