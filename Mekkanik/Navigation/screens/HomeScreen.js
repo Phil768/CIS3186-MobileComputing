@@ -11,6 +11,7 @@ import {
   Image,
   Dimensions
 } from "react-native";
+
 import {
   collection,
   addDoc,
@@ -21,6 +22,7 @@ import {
   updateDoc,
   doc,
 } from "firebase/firestore";
+
 import { auth, db } from "../../configurations/index";
 import * as Location from "expo-location";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -94,21 +96,27 @@ export default function HomeScreen(props) {
     });
   }
   async function getCurrentLocation() {
-    const { status } = await Location.requestBackgroundPermissionsAsync();
-    if (status !== "granted") {
-      console.log("Permission to access location was denied");
-      return;
+    try {
+      const status = await Location.requestBackgroundPermissionsAsync();
+      if (status.status !== "granted") {
+        console.log("Permission to access location was denied");
+        return;
+      }
+      const location = await Location.getCurrentPositionAsync({
+        enableHighAccuracy: true,
+      });
+      return {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      };
+    } catch (e) {
+      console.log(e);
     }
-    const location = await Location.getCurrentPositionAsync({
-      enableHighAccuracy: true,
-    });
-    return {
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude,
-    };
   }
 
   React.useEffect(() => {
+
+
     if (toggle) {
       async function refreshLocation() {
         const location = await getCurrentLocation();
@@ -267,15 +275,19 @@ export default function HomeScreen(props) {
   //Using react's useEffect in order to get the data automatically once the page has loaded.
   React.useEffect(() => {
     getCarData();
-    if (toggle) {
+    getThisYearsCarRunsData();
+    getThisMonthsCarRunsData();
+    getTodaysCarRunsData();
+    getCurrentFuelData();
+    const intervalId = setInterval(() => {
+      getCarData();
       getThisYearsCarRunsData();
       getThisMonthsCarRunsData();
       getTodaysCarRunsData();
       getCurrentFuelData();
-    } else {
-      //do nothing.
-    }
-  }, [toggle]);
+    }, 5000);
+    return () => clearInterval(intervalId);
+  }, []);
   // Returning the main body to be displayed on screen.
   return (
     <ImageBackground
@@ -287,6 +299,7 @@ export default function HomeScreen(props) {
           <Text style={styles.buttonText}>{toggle ? "Pause" : "Start"}</Text>
         </TouchableOpacity>
       </View>
+
       <ScrollView
       marginBottom={Dimensions.get("window").height * 0.15}
         contentContainerStyle={{
@@ -401,6 +414,7 @@ const styles = StyleSheet.create({
   container: {
    
   },
+
 });
 
 const chartConfig = {

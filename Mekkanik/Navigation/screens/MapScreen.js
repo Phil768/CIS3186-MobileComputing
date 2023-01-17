@@ -1,104 +1,99 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Text, Dimensions, Button } from "react-native";
-import MapView, {PROVIDER_GOOGLE, Marker } from "react-native-maps";
+import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
+
 //Main function of this screen.
 export default function MapScreen({ navigation }) {
-  markerState = ({myState:1});
+  //console. disableYellowBox = true;
+  const [currentLocation, setCurrentLocation] = React.useState(null);
+  const [lon, setLongitude] = useState(14.4845766);
+  const [lat, setLatitude] = useState(35.8970063);
+  const [nearbyGasStations, setNearbyGasStations] = useState([]);
 
-  const [mapRegion, setMapRegion] = useState({
-    latitude: 36.026666990852625,
-    longitude: 14.240446219546584,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
-  });
-
-  const displayFuelPumps = async () => {
-    {
-      markerState.myState == 1?
-      <>
-      {markerState.setState({myState: 2})}
-      </>
-      :
-      <>
-      {markerState.setState({myState: 1})}
-      </>
-     
+  async function getCurrentLocation() {
+    try {
+      const status = await Location.requestBackgroundPermissionsAsync();
+      if (status.status !== "granted") {
+        console.log("Permission to access location was denied");
+        return;
+      }
+      const location = await Location.getCurrentPositionAsync({
+        enableHighAccuracy: true,
+      });
+      return {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      };
+    } catch (e) {
+      console.log(e);
     }
-  };
+  }
 
-  //Getting the permission from the user to access their location.
-  const userLocation = async () => {
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== "granted") {
-      setErrorMsg("Permission denied");
-      return;
-    }
-    //Getting the actual location.
-    let location = await Location.getCurrentPositionAsync({
-      enableHighAccuracy: true,
-    });
-    //Setting the location on the map.
-    setMapRegion({
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude,
-      latitudeDelta: 0.0922,
-      longitudeDelta: 0.0421,
-    });
-  };
-  //Using the useEffect to get the location before the function loads.
   useEffect(() => {
-    userLocation();
+    async function refreshLocation() {
+      const location = await getCurrentLocation();
+      setCurrentLocation(location);
+      try {
+        setLongitude(location.longitude);
+        setLatitude(location.latitude);
+      } catch (error) {
+        setLongitude(14.4845766);
+        setLatitude(35.8970063);
+      }
+      console.log("Current location Map Screen:", location);
+    }
+    refreshLocation();
+    const intervalId = setInterval(() => {
+      refreshLocation();
+    }, 5000);
+    return () => clearInterval(intervalId);
   }, []);
-  //Returning the main body of the function to be displayed on screen.
+
+  const handleButtonPress = async () => {
+    console.log("Inside function");
+    if (lon && lat) {
+      console.log("Searching for gas stations.");
+      try {
+        const response = await fetch(
+          `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lon}&radius=50000&types=gas_station&key=AIzaSyDvuzOm5knBoIB2G1RFVBhAF-DGyYVaB1E`
+        );
+        const data = await response.json();
+        console.log(data);
+        setNearbyGasStations(data.results);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
   return (
     <View>
+      <Button onPress={handleButtonPress} title="Search for Gas Stations" />
       <MapView
-        provider={PROVIDER_GOOGLE}
-        style={styles.map} 
-        region={mapRegion}
+        style={styles.map}
+        showsUserLocation
+        initialRegion={{
+          latitude: lat,
+          longitude: lon,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        }}
       >
-        {
-          markerState.myState == 1?
-          <>
+        {nearbyGasStations.map((gasStation) => (
           <Marker
-        coordinate={{
-        latitude: 35.9055,
-        longitude: 14.43335,
-        
-        }}
-      image={require('../../assets/mapmarker.png')}
-      title="Petrol Pump Mosta"
-      />
-
-      <Marker
-        coordinate={{
-        latitude: 35.9415,
-        longitude: 14.4113,
-        
-        }}
-      image={require('../../assets/mapmarker.png')}
-      title="Petrol Pump Burmarrad"
-      />
-      </>
-      : null
-      }
+            key={gasStation.place_id}
+            coordinate={{
+              latitude: gasStation.geometry.location.lat,
+              longitude: gasStation.geometry.location.lng,
+            }}
+            title={gasStation.name}
+            pinColor={"red"}
+            description={gasStation.vicinity}
+          ></Marker>
+        ))}
       </MapView>
-
-      <View style={{ position: "absolute", bottom: 200, left: 20 }}>
-      <Button
-          title="Display Near Fuel Stations"
-          onPress={displayFuelPumps}
-          style={styles.button}
-        />
-        <Button
-          title="Get current location"
-          onPress={userLocation}
-          style={styles.button}
-        />
-      </View>
     </View>
-    
   );
 }
 //Styling for this screen
@@ -109,5 +104,6 @@ const styles = StyleSheet.create({
   },
   button: {
     border: "1px solid black",
+    bottom: 100,
   },
 });
