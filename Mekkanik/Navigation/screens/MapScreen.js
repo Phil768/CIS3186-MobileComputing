@@ -1,15 +1,29 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, Text, Dimensions, Button } from "react-native";
-import MapView, { Marker } from "react-native-maps";
+import {
+  StyleSheet,
+  View,
+  Text,
+  Dimensions,
+  Button,
+  TouchableOpacity,
+  Image,
+} from "react-native";
+import MapView, { Marker, Polyline } from "react-native-maps";
 import * as Location from "expo-location";
+import axios from "axios";
+import polyline from "polyline";
+import { decode } from "google-polyline";
 
 //Main function of this screen.
 export default function MapScreen({ navigation }) {
   //console. disableYellowBox = true;
   const [currentLocation, setCurrentLocation] = React.useState(null);
+  const [markerPress, setMarkerPress] = React.useState(false);
   const [lon, setLongitude] = useState(14.4845766);
   const [lat, setLatitude] = useState(35.8970063);
   const [nearbyGasStations, setNearbyGasStations] = useState([]);
+  const [routeCoordinates, setRouteCoordinates] = useState([]);
+  const [markerCoordinates, setMarkerCoordinates] = useState({});
 
   async function getCurrentLocation() {
     try {
@@ -38,8 +52,8 @@ export default function MapScreen({ navigation }) {
         setLongitude(location.longitude);
         setLatitude(location.latitude);
       } catch (error) {
-        setLongitude(14.4845766);
-        setLatitude(35.8970063);
+        setLongitude(14.485275910750046);
+        setLatitude(35.901847041279204);
       }
       console.log("Current location Map Screen:", location);
     }
@@ -49,6 +63,50 @@ export default function MapScreen({ navigation }) {
     }, 5000);
     return () => clearInterval(intervalId);
   }, []);
+
+  //Function which displays the route on screen.
+  const getRoute = async () => {
+    try {
+      //Storing the API key int a variable.
+      const API_KEY = "AIzaSyDvuzOm5knBoIB2G1RFVBhAF-DGyYVaB1E";
+      //Storing the latitude and lotitude as variables in as string.
+      const origin = `${lat}, ${lon}`;
+      //Storing the destination in a variable.
+      const destination = `${markerCoordinates.latitude}, ${markerCoordinates.longitude}`;
+      const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${origin}&destination=${destination}&key=${API_KEY}`;
+      const { data } = await axios.get(url);
+      console.log("STATUS", data);
+      console.log("STATUS", data.geocoded_waypoints[0].geocoder_status);
+      if (data.geocoded_waypoints[0].geocoder_status === "OK") {
+        console.log("HIT");
+        const points = decode(data.routes[0].overview_polyline.points);
+        const coordinates = points.map((point) => ({
+          latitude: point[0],
+          longitude: point[1],
+        }));
+        setRouteCoordinates(coordinates);
+      }
+      console.log("ROUTE COORDINATES: ", routeCoordinates);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleMarkerPress = (event) => {
+    console.log("PRESSED");
+    const { coordinate } = event.nativeEvent;
+    console.log("COORDINATES", coordinate.latitude, coordinate.longitude);
+    setMarkerCoordinates({
+      latitude: coordinate.latitude,
+      longitude: coordinate.longitude,
+    });
+    getRoute();
+    console.log(markerPress);
+  };
+
+  const handleDirectionButtonPress = () => {
+    setMarkerPress(!markerPress);
+  };
 
   const handleButtonPress = async () => {
     console.log("Inside function");
@@ -68,8 +126,7 @@ export default function MapScreen({ navigation }) {
   };
 
   return (
-    <View>
-      <Button onPress={handleButtonPress} title="Search for Gas Stations" />
+    <View style={styles.container}>
       <MapView
         style={styles.map}
         showsUserLocation
@@ -80,6 +137,15 @@ export default function MapScreen({ navigation }) {
           longitudeDelta: 0.0421,
         }}
       >
+        <View>
+          <TouchableOpacity
+            activeOpacity={1}
+            onPress={handleButtonPress}
+            style={styles.button}
+          >
+            <Text style={styles.buttonText}>Search nearest gas stations</Text>
+          </TouchableOpacity>
+        </View>
         {nearbyGasStations.map((gasStation) => (
           <Marker
             key={gasStation.place_id}
@@ -90,9 +156,28 @@ export default function MapScreen({ navigation }) {
             title={gasStation.name}
             pinColor={"red"}
             description={gasStation.vicinity}
+            onPress={handleMarkerPress}
           ></Marker>
         ))}
+        {markerPress && (
+          <Polyline
+            coordinates={routeCoordinates}
+            strokeWidth={5}
+            strokeColor="red"
+          />
+        )}
       </MapView>
+      <View style={styles.directionsButton}>
+        <TouchableOpacity
+          onPress={handleDirectionButtonPress}
+          style={styles.directionsButtonText}
+        >
+          <Image
+            source={require("../../assets/signpost.png")}
+            style={styles.image}
+          />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -101,9 +186,40 @@ const styles = StyleSheet.create({
   map: {
     width: Dimensions.get("window").width,
     height: Dimensions.get("window").height,
+    flex: 1,
   },
   button: {
-    border: "1px solid black",
-    bottom: 100,
+    backgroundColor: "#545150",
+    height: 35,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 8,
+    width: "100%",
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 18,
+    fontFamily: "Helvetica",
+    fontWeight: "bold",
+  },
+  directionsButton: {
+    position: "absolute",
+    bottom: 140,
+    right: 20,
+  },
+  image: {
+    height: 40,
+    width: 30,
+  },
+  directionsButtonText: {
+    backgroundColor: "#545150",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 8,
+    height: 50,
+    width: 50,
+  },
+  container: {
+    flex: 1,
   },
 });
