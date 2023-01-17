@@ -9,6 +9,7 @@ import {
   ImageBackground,
   ScrollView,
   Image,
+  Dimensions
 } from "react-native";
 import {
   collection,
@@ -23,6 +24,14 @@ import {
 import { auth, db } from "../../configurations/index";
 import * as Location from "expo-location";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import {
+  LineChart,
+  BarChart,
+  PieChart,
+  ProgressChart,
+  ContributionGraph,
+  StackedBarChart
+} from "react-native-chart-kit";
 
 export default function HomeScreen(props) {
   /*Creating the required state to be used by the below function*/
@@ -53,6 +62,23 @@ export default function HomeScreen(props) {
     console.log("VALUE", value);
     setToggle(!value);
   };
+
+  const dataProgressBarOil = {
+    labels: ["brake", "engine", "cool liqd"], // optional
+    data: [0.65, 0.7, 0.8]
+  };
+
+  const dataProgressBarFuel = {
+    labels: ["Elec", "Oil"], // optional
+    data: [0.3, 0.7]
+  };
+
+  const dataLineChartOilCons ={
+    labels: ["October", "November", "December", "January"],
+    datasets: [{data: [32.7, 21.1, 38.9, 45.2,]}]
+};
+
+
   //Running the above function upon render.
   React.useEffect(() => {
     getData();
@@ -262,31 +288,81 @@ export default function HomeScreen(props) {
         </TouchableOpacity>
       </View>
       <ScrollView
+      marginBottom={Dimensions.get("window").height * 0.15}
         contentContainerStyle={{
           paddingHorizontal: 15,
+          
         }}
         vertical
         showsVerticalScrollIndicator={false}
       >
-        <TouchableOpacity style={styles.card}>
-          <Text>Year: {car.year}</Text>
-          <Text>Consumption (L) per KM: {car.consumptionPerKm}</Text>
-          <Text>Fuel Tank Capacity (L): {car.fuelTankCapacity}</Text>
-          <Text>Engine: {car.engine}</Text>
-        </TouchableOpacity>
 
-        <TouchableOpacity style={styles.card}>
-          <Text>KM Driven (this year): {kmYearDriven.toFixed(2)}</Text>
-          <Text>KM Driven (this month): {kmMonthDriven.toFixed(2)}</Text>
-          <Text>KM Driven (today): {kmDayDriven.toFixed(2)}</Text>
-        </TouchableOpacity>
+<View >
+  <LineChart
+    data={dataLineChartOilCons}
+    width={Dimensions.get("window").width -30} // from react-native
+    height={220}
+    yAxisLabel=""
+    yAxisSuffix="L"
+    yAxisInterval={1} // optional, defaults to 1
+    chartConfig={{
+      backgroundColor: "#233767",
+      backgroundGradientFrom: "#233767",
+      backgroundGradientTo: "#233767",
+      decimalPlaces: 2, // optional, defaults to 2dp
+      color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+      labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+      style: {
+        borderRadius: 16
+      },
+      propsForDots: {
+        r: "6",
+        strokeWidth: "2",
+        stroke: "#ffa726"
+      }
+    }}
+    bezier
+    style={{
+      marginVertical: 8,
+      borderRadius: 16,
 
-        <TouchableOpacity style={styles.card}>
-          <Text>
-            Current Fuel: {remainingPetrol.toFixed(2)}/
-            {props.car.fuelTankCapacity}
-          </Text>
-        </TouchableOpacity>
+    }}
+  />
+</View>
+
+<View>
+<ProgressChart
+  data={dataProgressBarOil}
+  width={Dimensions.get("window").width -30}
+  height={220}
+  strokeWidth={16}
+  radius={32}
+  chartConfig={chartConfig}
+  hideLegend={false}
+  style={{
+      marginVertical: 8,
+      borderRadius: 16,
+    }}
+/>
+</View>
+
+<View>
+<ProgressChart
+  data={dataProgressBarFuel}
+  width={Dimensions.get("window").width -30}
+  height={220}
+  strokeWidth={16}
+  radius={32}
+  chartConfig={chartConfig}
+  hideLegend={false}
+  style={{
+      marginVertical: 8,
+      borderRadius: 16,
+    }} 
+/>
+</View>
+      
+        
       </ScrollView>
     </ImageBackground>
   );
@@ -323,6 +399,19 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   container: {
-    padding: 10,
+   
   },
 });
+
+const chartConfig = {
+  backgroundGradientFrom: "#233767",
+  backgroundGradientFromOpacity: 1,
+  backgroundGradientTo: "#233767",
+  backgroundGradientToOpacity: 1,
+  color: (opacity = 1) => `rgba(242, 176, 101, ${opacity})`,
+  strokeWidth: 2, // optional, default 3
+  barPercentage: 0.5,
+  useShadowColorFromDataset: false,// optional
+  
+  
+};
