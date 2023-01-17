@@ -47,7 +47,7 @@ export default function HomeScreen(props) {
     async function refreshLocation() {
       const location = await getCurrentLocation();
       setCurrentLocation(location);
-      console.log('Current location:', location);
+      console.log('Current location Home Screen:', location);
     }
     refreshLocation();
     const intervalId = setInterval(() => {

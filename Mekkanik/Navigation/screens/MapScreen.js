@@ -5,39 +5,10 @@ import * as Location from "expo-location";
 
 //Main function of this screen.
 export default function MapScreen({ navigation }) {
-  const [currentLocation, setCurrentLocation] = useState(null);
-  const [lon, setLongitude] = useState(14.3754);
-  const [lat, setLatitude] = useState(35.9375);
+  const [currentLocation, setCurrentLocation] = React.useState(null);
+  const [lon, setLongitude] = useState(14.4845766);
+  const [lat, setLatitude] = useState(35.8970063);
   const [nearbyGasStations, setNearbyGasStations] = useState([]);
-
-  useEffect(() => {
-    async function refreshLocation() {
-      const location = await getCurrentLocation();
-      console.log("LOCATION", location);
-      try {
-        if (!location || location === null) {
-          setLongitude(14.3754);
-          setLatitude(35.9375);
-        } else {
-          lon = location.longitude;
-          lat = location.latitude;
-          setLongitude(lon);
-          setLatitude(lat);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-
-      console.log("Setting current location.");
-      console.log("Current longitude:", lon);
-      console.log("Current latitude:", lat);
-    }
-    refreshLocation();
-    const intervalId = setInterval(() => {
-      refreshLocation();
-    }, 5000);
-    return () => clearInterval(intervalId);
-  }, []);
 
   async function getCurrentLocation() {
     const { status } = await Location.requestBackgroundPermissionsAsync();
@@ -45,19 +16,37 @@ export default function MapScreen({ navigation }) {
       console.log("Permission to access location was denied");
       return;
     }
-    let location = await Location.getCurrentPositionAsync({});
+    const location = await Location.getCurrentPositionAsync({
+      enableHighAccuracy: true,
+    });
     return {
       latitude: location.coords.latitude,
       longitude: location.coords.longitude,
     };
   }
-  // const location = await Location.getCurrentPositionAsync({
-  //   enableHighAccuracy: true,
-  // });
-  // return {
-  //   latitude: location.coords.latitude,
-  //   longitude: location.coords.longitude,
-  // };
+
+  useEffect(() => {
+    async function refreshLocation() {
+      const location = await getCurrentLocation();
+      setCurrentLocation(location);
+      try {
+        setLongitude(location.longitude);
+        setLatitude(location.latitude);
+      } catch (error){
+        setLongitude(14.4845766);
+        setLatitude(35.8970063);
+      }
+      console.log('Current location Map Screen:', location);
+      
+    }
+    refreshLocation();
+    const intervalId = setInterval(() => {
+      refreshLocation();
+    }, 5000)
+    return () => clearInterval(intervalId);
+  }, [])
+
+  
 
   const handleButtonPress = async () => {
     console.log("Inside function");
@@ -65,7 +54,7 @@ export default function MapScreen({ navigation }) {
       console.log("Searching for gas stations.");
       try {
         const response = await fetch(
-          `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lon}&radius=5000&types=gas_station&key=AIzaSyDvuzOm5knBoIB2G1RFVBhAF-DGyYVaB1E`
+          `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lon}&radius=50000&types=gas_station&key=AIzaSyDvuzOm5knBoIB2G1RFVBhAF-DGyYVaB1E`
         );
         const data = await response.json();
         console.log(data);
