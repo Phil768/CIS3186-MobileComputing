@@ -10,6 +10,7 @@ import {
   ScrollView,
   Image,
 } from "react-native";
+
 import {
   collection,
   addDoc,
@@ -20,6 +21,7 @@ import {
   updateDoc,
   doc,
 } from "firebase/firestore";
+
 import { auth, db } from "../../configurations/index";
 import * as Location from "expo-location";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -68,21 +70,27 @@ export default function HomeScreen(props) {
     });
   }
   async function getCurrentLocation() {
-    const { status } = await Location.requestBackgroundPermissionsAsync();
-    if (status !== "granted") {
-      console.log("Permission to access location was denied");
-      return;
+    try {
+      const status = await Location.requestBackgroundPermissionsAsync();
+      if (status.status !== "granted") {
+        console.log("Permission to access location was denied");
+        return;
+      }
+      const location = await Location.getCurrentPositionAsync({
+        enableHighAccuracy: true,
+      });
+      return {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      };
+    } catch (e) {
+      console.log(e);
     }
-    const location = await Location.getCurrentPositionAsync({
-      enableHighAccuracy: true,
-    });
-    return {
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude,
-    };
   }
 
   React.useEffect(() => {
+
+
     if (toggle) {
       async function refreshLocation() {
         const location = await getCurrentLocation();
@@ -265,6 +273,7 @@ export default function HomeScreen(props) {
           <Text style={styles.buttonText}>{toggle ? "Pause" : "Start"}</Text>
         </TouchableOpacity>
       </View>
+
       <ScrollView
         contentContainerStyle={{
           paddingHorizontal: 15,
@@ -329,4 +338,5 @@ const styles = StyleSheet.create({
   container: {
     padding: 10,
   },
+
 });

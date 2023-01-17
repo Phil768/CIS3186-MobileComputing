@@ -14,11 +14,13 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "infoPlist": {
+        "NSLocationAlwaysUsageDescription": "We use your location to show you nearby events"
+      },
+      "supportsTablet": true,
+      "UIBackgroundModes": ["location", "fetch"]
     },
     "android": {
       "adaptiveIcon": {
