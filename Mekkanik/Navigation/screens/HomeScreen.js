@@ -1,11 +1,19 @@
 import * as React from "react";
-import { View, Text, TextInput, Button, StyleSheet, RefreshControl, ImageBackground, ScrollView, Image } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  StyleSheet,
+  RefreshControl,
+  ImageBackground,
+  ScrollView,
+  Image,
+} from "react-native";
 import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
 import { auth, db } from "../../configurations/index";
-import * as Location from 'expo-location';
+import * as Location from "expo-location";
 import { TouchableOpacity } from "react-native-gesture-handler";
-
-
 
 export default function HomeScreen(props) {
   /*Creating the required state to be used by the below function*/
@@ -29,7 +37,12 @@ export default function HomeScreen(props) {
   const imageBg = require("../../assets/imageBg.png");
 
   async function getCurrentLocation() {
-    const { status } = await Location.requestBackgroundPermissionsAsync();
+    let status;
+    try {
+      status = await Location.requestBackgroundPermissionsAsync();
+    } catch (e) {
+      console.log(e);
+    }
     if (status !== "granted") {
       console.log("Permission to access location was denied");
       return;
@@ -47,14 +60,14 @@ export default function HomeScreen(props) {
     async function refreshLocation() {
       const location = await getCurrentLocation();
       setCurrentLocation(location);
-      console.log('Current location Home Screen:', location);
+      console.log("Current location Home Screen:", location);
     }
     refreshLocation();
     const intervalId = setInterval(() => {
       refreshLocation();
-    }, 5000)
+    }, 5000);
     return () => clearInterval(intervalId);
-  }, [])
+  }, []);
 
   // Calculating the corresponding distance everytime our current location changes
   React.useEffect(() => {
@@ -68,7 +81,7 @@ export default function HomeScreen(props) {
     }
     setPreviousLocation(currentLocation);
   }, [currentLocation]);
-  
+
   // Calculate the distance traveled.
   function calculateDistance(loc1, loc2) {
     // Calculate the distance between two locations using the Haversine formula
@@ -202,41 +215,36 @@ export default function HomeScreen(props) {
   // Returning the main body to be displayed on screen.
   return (
     <ImageBackground
-    source={imageBg}
-    style={{resizeMode: "cover",
-            overflow: "hidden",
-            flex: 1}}>
+      source={imageBg}
+      style={{ resizeMode: "cover", overflow: "hidden", flex: 1 }}
+    >
+      <ScrollView
+        contentContainerStyle={{
+          paddingHorizontal: 15,
+        }}
+        vertical
+        showsVerticalScrollIndicator={false}
+      >
+        <TouchableOpacity style={styles.card}>
+          <Text>Year: {car.year}</Text>
+          <Text>Consumption (L) per KM: {car.consumptionPerKm}</Text>
+          <Text>Fuel Tank Capacity (L): {car.fuelTankCapacity}</Text>
+          <Text>Engine: {car.engine}</Text>
+        </TouchableOpacity>
 
-            <ScrollView 
-            contentContainerStyle={{
-              paddingHorizontal: 15
-              
-            }}
-            vertical
-            showsVerticalScrollIndicator={false}
-            >
+        <TouchableOpacity style={styles.card}>
+          <Text>KM Driven (this year): {kmYearDriven.toFixed(2)}</Text>
+          <Text>KM Driven (this month): {kmMonthDriven.toFixed(2)}</Text>
+          <Text>KM Driven (today): {kmDayDriven.toFixed(2)}</Text>
+        </TouchableOpacity>
 
-            <TouchableOpacity style={styles.card}>            
-              <Text>Year: {car.year}</Text>
-              <Text>Consumption (L) per KM: {car.consumptionPerKm}</Text>
-              <Text>Fuel Tank Capacity (L): {car.fuelTankCapacity}</Text>
-              <Text>Engine: {car.engine}</Text>
-
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.card}>           
-              <Text>KM Driven (this year): {kmYearDriven.toFixed(2)}</Text>
-              <Text>KM Driven (this month): {kmMonthDriven.toFixed(2)}</Text>
-              <Text>KM Driven (today): {kmDayDriven.toFixed(2)}</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.card}>            
-            <Text>Current Fuel: {remainingPetrol.toFixed(2)}/{props.car.fuelTankCapacity}</Text>
-            </TouchableOpacity>
-
-            
-            </ScrollView>
-      
+        <TouchableOpacity style={styles.card}>
+          <Text>
+            Current Fuel: {remainingPetrol.toFixed(2)}/
+            {props.car.fuelTankCapacity}
+          </Text>
+        </TouchableOpacity>
+      </ScrollView>
     </ImageBackground>
   );
 }
@@ -249,14 +257,13 @@ const styles = StyleSheet.create({
     padding: 10,
   },
 
-  card:{
+  card: {
     height: 200,
     width: 300,
-    
+
     justifyContent: "center",
     backgroundColor: "#DDDDDD",
     margin: 15,
-    borderRadius: 15
-
-  }
+    borderRadius: 15,
+  },
 });

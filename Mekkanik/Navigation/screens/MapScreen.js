@@ -5,13 +5,19 @@ import * as Location from "expo-location";
 
 //Main function of this screen.
 export default function MapScreen({ navigation }) {
+  //console. disableYellowBox = true;
   const [currentLocation, setCurrentLocation] = React.useState(null);
   const [lon, setLongitude] = useState(14.4845766);
   const [lat, setLatitude] = useState(35.8970063);
   const [nearbyGasStations, setNearbyGasStations] = useState([]);
 
   async function getCurrentLocation() {
-    const { status } = await Location.requestBackgroundPermissionsAsync();
+    let status;
+    try {
+      status = await Location.requestBackgroundPermissionsAsync();
+    } catch (e) {
+      console.log(e);
+    }
     if (status !== "granted") {
       console.log("Permission to access location was denied");
       return;
@@ -32,21 +38,18 @@ export default function MapScreen({ navigation }) {
       try {
         setLongitude(location.longitude);
         setLatitude(location.latitude);
-      } catch (error){
+      } catch (error) {
         setLongitude(14.4845766);
         setLatitude(35.8970063);
       }
-      console.log('Current location Map Screen:', location);
-      
+      console.log("Current location Map Screen:", location);
     }
     refreshLocation();
     const intervalId = setInterval(() => {
       refreshLocation();
-    }, 5000)
+    }, 5000);
     return () => clearInterval(intervalId);
-  }, [])
-
-  
+  }, []);
 
   const handleButtonPress = async () => {
     console.log("Inside function");
