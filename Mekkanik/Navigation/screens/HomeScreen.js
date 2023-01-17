@@ -37,23 +37,22 @@ export default function HomeScreen(props) {
   const imageBg = require("../../assets/imageBg.png");
 
   async function getCurrentLocation() {
-    let status;
     try {
-      status = await Location.requestBackgroundPermissionsAsync();
+      const status = await Location.requestBackgroundPermissionsAsync();
+      if (status.status !== "granted") {
+        console.log("Permission to access location was denied");
+        return;
+      }
+      const location = await Location.getCurrentPositionAsync({
+        enableHighAccuracy: true,
+      });
+      return {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      };
     } catch (e) {
       console.log(e);
     }
-    if (status !== "granted") {
-      console.log("Permission to access location was denied");
-      return;
-    }
-    const location = await Location.getCurrentPositionAsync({
-      enableHighAccuracy: true,
-    });
-    return {
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude,
-    };
   }
 
   React.useEffect(() => {
