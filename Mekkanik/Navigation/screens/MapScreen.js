@@ -128,19 +128,19 @@ export default function MapScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <View>
-          <TouchableOpacity
-            activeOpacity={1}
-            onPress={handleButtonPress}
-            style={styles.button}
-          >
-            <Text style={styles.buttonText}>
-              {gasPress
-                ? "Hide nearest gas stations"
-                : "Show nearest gas stations"}
-            </Text>
-          </TouchableOpacity>
-        </View>
+      <View style={{ padding: 10 }}>
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={handleButtonPress}
+          style={styles.button}
+        >
+          <Text style={styles.buttonText}>
+            {gasPress
+              ? "Hide nearest gas stations"
+              : "Show nearest gas stations"}
+          </Text>
+        </TouchableOpacity>
+      </View>
       <MapView
         style={styles.map}
         showsUserLocation
@@ -176,7 +176,11 @@ export default function MapScreen({ navigation }) {
       <View style={styles.directionsButton}>
         <TouchableOpacity
           onPress={handleDirectionButtonPress}
-          style={styles.directionsButtonText}
+          style={
+            markerPress
+              ? styles.directionsButtonTextClicked
+              : styles.directionsButtonText
+          }
         >
           <Image
             source={require("../../assets/signpost.png")}
@@ -208,14 +212,34 @@ const styles = StyleSheet.create({
     fontFamily: "Helvetica",
     fontWeight: "bold",
   },
-  directionsButton: {
+  directionsButtonClicked: {
     position: "absolute",
     bottom: 140,
     right: 20,
   },
+  imageClicked: {
+    height: 40,
+    width: 30,
+  },
+  directionsButtonTextClicked: {
+    backgroundColor: "#545150",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 8,
+    height: 50,
+    width: 50,
+    opacity: 1,
+  },
+  directionsButton: {
+    position: "absolute",
+    bottom: 140,
+    right: 20,
+    opacity: 5,
+  },
   image: {
     height: 40,
     width: 30,
+    opacity: 4,
   },
   directionsButtonText: {
     backgroundColor: "#545150",
@@ -224,6 +248,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     height: 50,
     width: 50,
+    opacity: 0.5,
   },
   container: {
     flex: 1,

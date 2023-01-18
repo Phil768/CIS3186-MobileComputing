@@ -9,6 +9,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
+  Alert,
 } from "react-native";
 import firebase from "firebase/compat/app";
 import { auth, db } from "../../configurations/index";
@@ -33,7 +34,12 @@ const LoginSignupPage = ({ navigation }) => {
       })
       .catch((error) => {
         //Login failed
-        setError(error.message);
+        console.log(error);
+        Alert.alert(
+          "Login failed",
+          "Make sure that credentials are entered correctly.",
+          [{ text: "OK", onPress: () => console.log("OK Pressed") }]
+        );
       });
   };
   //When the user has no prior account and wants to create one. Firebase handles everything.
@@ -46,7 +52,7 @@ const LoginSignupPage = ({ navigation }) => {
       })
       .catch((error) => {
         //Signup failed
-        setError(error.message);
+        Alert.alert(error);
       });
   };
   //Returning the main body of the application which will be viewed on screen.
@@ -56,7 +62,6 @@ const LoginSignupPage = ({ navigation }) => {
       style={{ resizeMode: "cover", overflow: "hidden", flex: 1 }}
     >
       <SafeAreaView>
-        {error && <Text>{error}</Text>}
         <TextInput
           placeholder="Email"
           value={email}

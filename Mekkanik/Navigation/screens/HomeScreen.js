@@ -38,6 +38,7 @@ import {
 export default function HomeScreen(props) {
   /*Creating the required state to be used by the below function*/
   const [car, setCar] = React.useState({});
+  const [totalKmDriven, setTotalKmDriven] = React.useState(0);
   const [kmYearDriven, setKmYearDriven] = React.useState(0);
   const [kmMonthDriven, setKmMonthDriven] = React.useState(0);
   const [kmDayDriven, setKmDayDriven] = React.useState(0);
@@ -197,6 +198,7 @@ export default function HomeScreen(props) {
 
     querySnapshot.forEach((documentSnapshot) => {
       var data = documentSnapshot.data();
+      setTotalKmDriven(data.kmDriven);
       kmYearDriven = kmYearDriven + data.kmDriven;
     });
 
@@ -278,8 +280,11 @@ export default function HomeScreen(props) {
 
   // Returning the main body to be displayed on screen.
   const dataProgressBarFuel = {
-    labels: ["Fuel"], // optional
-    data: [remainingPetrol / props.car.fuelTankCapacity],
+    labels: ["Oil", "Fuel"], // optional
+    data: [
+      (oilAverage - oilConsumptionAverage * kmDayDriven) / oilAverage,
+      remainingPetrol / props.car.fuelTankCapacity,
+    ],
   };
 
   const dataBarChart = {
@@ -298,20 +303,24 @@ export default function HomeScreen(props) {
     >
       <View style={styles.container}>
         <TouchableOpacity onPress={handleToggle} style={styles.button}>
-          <Text style={styles.buttonText}>{toggle ? "Pause" : "Start"}</Text>
+          <Text style={styles.buttonText}>
+            {toggle ? "Pause journey" : "Start journey"}
+          </Text>
         </TouchableOpacity>
       </View>
-
       <ScrollView
-        marginBottom={Dimensions.get("window").height * 0.15}
+        marginBottom={Dimensions.get("window").height * 0.17}
         contentContainerStyle={{
           paddingHorizontal: 15,
         }}
         vertical
         showsVerticalScrollIndicator={false}
       >
+        <View style={styles.titleContainer}>
+          <Text style={styles.titleText}>Car details</Text>
+        </View>
         <View style={styles.card}>
-          <Text style={styles.innerText}>Car: {car.name}</Text>
+          <Text style={styles.innerText}>Model: {car.name}</Text>
           <Text style={styles.innerText}>Year: {car.year}</Text>
           <Text style={styles.innerText}>
             Consumption (L/KM): {car.consumptionPerKm}
@@ -322,10 +331,13 @@ export default function HomeScreen(props) {
           <Text style={styles.innerText}>Engine Size: {car.engine}</Text>
         </View>
         <View>
+          <View style={styles.titleContainer}>
+            <Text style={styles.titleText}>Total fuel remaining</Text>
+          </View>
           <ProgressChart
             data={dataProgressBarFuel}
             width={Dimensions.get("window").width - 30}
-            height={140}
+            height={160}
             strokeWidth={16}
             radius={32}
             chartConfig={chartConfig}
@@ -337,27 +349,25 @@ export default function HomeScreen(props) {
           />
         </View>
         <View style={{ marginBottom: 10 }}>
-          <Text>KM Driven Data</Text>
+          <View style={styles.titleContainer}>
+            <Text style={styles.titleText}>Kilometers(KM) driven</Text>
+          </View>
           <BarChart
             fromZero
             data={dataBarChart}
             width={Dimensions.get("window").width - 30}
-            height={220}
+            height={300}
             chartConfig={{
+              paddingTop: "20%",
               backgroundColor: "#233767",
               backgroundGradientFrom: "#233767",
               backgroundGradientTo: "#233767",
               decimalPlaces: 2,
               color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
               labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              style: {
-                borderRadius: 16,
-                paddingBottom: 100,
-              },
             }}
-            verticalLabelRotation={30}
             style={{
-              borderRadius: 20,
+              borderRadius: 16,
             }}
           />
         </View>
@@ -375,7 +385,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   card: {
-    height: 220,
+    height: 170,
     width: Dimensions.get("window").width - 30,
     marginVertical: 8,
     justifyContent: "center",
@@ -400,10 +410,22 @@ const styles = StyleSheet.create({
     color: "white",
     marginHorizontal: 24,
     fontSize: 18,
+    marginBottom: 8,
+    fontWeight: "bold",
+    fontStyle: "italic",
   },
   container: {
     padding: 10,
     marginHorizontal: 5,
+  },
+  titleContainer: {
+    padding: 8,
+    marginTop: 5,
+  },
+  titleText: {
+    fontSize: 17,
+    fontWeight: "bold",
+    fontStyle: "italic",
   },
 });
 

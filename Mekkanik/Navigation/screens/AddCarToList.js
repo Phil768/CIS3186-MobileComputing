@@ -91,6 +91,11 @@ const AddCarToList = ({ navigation }) => {
         engine: car.engine,
         toggle: false,
       });
+      Alert.alert(
+        "Car added successfully",
+        "Chosen car has been added, make sure to pull down and refresh the list to get latest update.",
+        [{ text: "OK", onPress: () => console.log("OK Pressed") }]
+      );
     } else {
       Alert.alert(
         "Car Already Added",

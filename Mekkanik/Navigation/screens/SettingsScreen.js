@@ -7,6 +7,7 @@ import {
   ImageBackground,
   StyleSheet,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { getAuth, signOut } from "firebase/auth";
 import firebase from "firebase/app";
@@ -33,24 +34,45 @@ export default function SettingsScreen(props) {
     props.navigation.navigate("List");
   };
   //Function to logout and return to the login screen.
-  const logOut = () => {
+  const logOut = (displayAlert) => {
     const auth = getAuth();
     signOut(auth)
       .then(() => {
+        if (displayAlert) {
+          Alert.alert(
+            "Logout successful!",
+            "Logging out of account, you will be redirected shortly.",
+            [{ text: "OK", onPress: () => console.log("OK Pressed") }]
+          );
+        }
         props.navigation.navigate("Login");
       })
       .catch((error) => {
         console.log(error);
+        Alert.alert(
+          "Logout failed",
+          "Logout is unavailable at the moment, try again later.",
+          [{ text: "OK", onPress: () => console.log("OK Pressed") }]
+        );
       });
   };
   //Deleting the element.
   const deleteItem = async () => {
     try {
       await deleteDoc(doc(db, "Cars", props.car.id));
-      console.log("Document deleted successfully");
-      logOut();
+      Alert.alert(
+        "Delete successful!",
+        "Car has been deleted, you will be redirected shortly.",
+        [{ text: "OK", onPress: () => console.log("OK Pressed") }]
+      );
+      logOut(false);
     } catch (error) {
       console.error("Error deleting document: ", error);
+      Alert.alert(
+        "Delete failed",
+        "Deletion is unavailable at the moment, try again later.",
+        [{ text: "OK", onPress: () => console.log("OK Pressed") }]
+      );
     }
   };
   //Reset the car stats such as fuel and distance.
@@ -72,10 +94,18 @@ export default function SettingsScreen(props) {
     batch
       .commit()
       .then(() => {
-        console.log("Batch successfully committed!");
+        Alert.alert(
+          "Reset successful",
+          "Car fuel has been reset to maximum capacity.",
+          [{ text: "OK", onPress: () => console.log("OK Pressed") }]
+        );
       })
       .catch((error) => {
-        console.error("Error committing batch: ", error);
+        Alert.alert(
+          "Reset failed",
+          "Reset is unavailable at the moment, try again later.",
+          [{ text: "OK", onPress: () => console.log("OK Pressed") }]
+        );
       });
   };
 
@@ -98,7 +128,7 @@ export default function SettingsScreen(props) {
       style={{ resizeMode: "cover", overflow: "hidden", flex: 1 }}
     >
       <View style={styles.container}>
-        <TouchableOpacity onPress={logOut} style={styles.button}>
+        <TouchableOpacity onPress={() => logOut(true)} style={styles.button}>
           <Text style={styles.buttonText}>Logout</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={changeCar} style={styles.button}>
