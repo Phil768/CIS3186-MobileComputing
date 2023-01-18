@@ -22,7 +22,6 @@ import {
 } from "firebase/firestore";
 //Main function of this screen.
 export default function SettingsScreen(props) {
-  console.log(props.car.id);
   const today = new Date();
   const todaysDay = today.getDate();
   const todaysMonth = today.getMonth() + 1;
@@ -81,7 +80,6 @@ export default function SettingsScreen(props) {
 
   //Mock a moving car - update database with mock values as if car is moving
   const mockMovingCar = async () => {
-    console.log("TEST");
     const docRef = await addDoc(collection(db, "CarRuns"), {
       carId: props.car.id,
       kmDriven: 50,

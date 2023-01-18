@@ -41,10 +41,14 @@ export default function HomeScreen(props) {
   const [kmYearDriven, setKmYearDriven] = React.useState(0);
   const [kmMonthDriven, setKmMonthDriven] = React.useState(0);
   const [kmDayDriven, setKmDayDriven] = React.useState(0);
+  const [remainingOil, setRemainingOil] = React.useState(0);
   const [toggle, setToggle] = React.useState(false);
   const [remainingPetrol, setRemainingPetrol] = React.useState(
     props.car.fuelTankCapacity
   );
+  const oilAverage = 4.5;
+  const oilConsumptionAverage = 0.05;
+
   const [carRuns, setCarRuns] = React.useState([]);
   const [currentLocation, setCurrentLocation] = React.useState(null);
   const [previousLocation, setPreviousLocation] = React.useState(null);
@@ -243,6 +247,7 @@ export default function HomeScreen(props) {
   // Calculating the current fuel.
   const getCurrentFuelData = async () => {
     let currentPetrolUsed = 0;
+    let currentOilUsed = 0;
     const query = db
       .collection("CarRuns")
       .where("carId", "==", props.car.id)
@@ -253,8 +258,7 @@ export default function HomeScreen(props) {
     querySnapshot.forEach((documentSnapshot) => {
       var data = documentSnapshot.data();
       //Calculatinf the current petrol used using basic arithmetic.
-      currentPetrolUsed =
-        currentPetrolUsed + data.kmDriven * props.car.consumptionPerKm;
+      currentPetrolUsed = currentPetrolUsed + data.kmDriven * props.car.consumptionPerKm;
     });
     //Setting the remaining petrol based on the current fuel tank capacity and the petrol used in session.
     setRemainingPetrol(props.car.fuelTankCapacity - currentPetrolUsed);
@@ -275,36 +279,21 @@ export default function HomeScreen(props) {
     }, 5000);
     return () => clearInterval(intervalId);
   }, []);
+
   // Returning the main body to be displayed on screen.
-
-
-const tes = remainingPetrol.toFixed(2);
-
-  const dataProgressBarOil = {
-    labels: ["brake", "engine", "cool liqd"], // optional
-    data: [0.65, 0.7, 0.8]
-  };
-
   const dataProgressBarFuel = {
-    labels: ["Elec", "Oil"], // optional
-    data: [0.3,remainingPetrol/props.car.fuelTankCapacity]
+    labels: ["Fuel"], // optional
+    data: [remainingPetrol/props.car.fuelTankCapacity]
   };
 
-  const dataLineChartOilCons ={
-    labels: ["October", "November", "December", "January"],
-    datasets: [{data: [32.7, 21.1, 38.9, 45.2,]}]
-};
-
-const dataBarChart = {
-  labels: ["Year", "Month", "Day"],
-  datasets: [
-    {
-      data: [kmYearDriven, kmMonthDriven, kmDayDriven]
-    }
-  ]
-};
-
-
+  const dataBarChart = {
+    labels: ["Year", "Month", "Day"],
+    datasets: [
+      {
+        data: [kmYearDriven, kmMonthDriven, kmDayDriven]
+      }
+    ]
+  };
 
   return (
     <ImageBackground
@@ -318,109 +307,66 @@ const dataBarChart = {
       </View>
 
       <ScrollView
-      marginBottom={Dimensions.get("window").height * 0.15}
+        marginBottom={Dimensions.get("window").height * 0.15}
         contentContainerStyle={{
-          paddingHorizontal: 15,
-          
+          paddingHorizontal: 15
         }}
         vertical
         showsVerticalScrollIndicator={false}
       >
 
-<View style={styles.card}>
-  <Text style={styles.innerText}>Year: {car.year}</Text>
-  <Text style={styles.innerText}>Consumption (L) per KM: {car.consumptionPerKm}</Text>
-  <Text style={styles.innerText}>Fuel Tank Capacity (L): {car.fuelTankCapacity}</Text>
-  <Text style={styles.innerText}>Engine: {car.engine}</Text>
-</View>
-
-<View >
-  <LineChart
-    data={dataLineChartOilCons}
-    width={Dimensions.get("window").width -30} // from react-native
-    height={220}
-    yAxisLabel=""
-    yAxisSuffix="L"
-    yAxisInterval={1} // optional, defaults to 1
-    chartConfig={{
-      backgroundColor: "#233767",
-      backgroundGradientFrom: "#233767",
-      backgroundGradientTo: "#233767",
-      decimalPlaces: 2, // optional, defaults to 2dp
-      color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-      labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-      style: {
-        borderRadius: 16
-      },
-      propsForDots: {
-        r: "6",
-        strokeWidth: "2",
-        stroke: "#ffa726"
-      }
-    }}
-    bezier
-    style={{
-      marginVertical: 8,
-      borderRadius: 16,
-
-    }}
-  />
-</View>
-
-<View>
-<ProgressChart
-  data={dataProgressBarOil}
-  width={Dimensions.get("window").width -30}
-  height={220}
-  strokeWidth={16}
-  radius={32}
-  chartConfig={chartConfig}
-  hideLegend={false}
-  style={{
-      marginVertical: 8,
-      borderRadius: 16,
-    }}
-/>
-</View>
-
-<View>
-<ProgressChart
-  data={dataProgressBarFuel}
-  width={Dimensions.get("window").width -30}
-  height={220}
-  strokeWidth={16}
-  radius={32}
-  chartConfig={chartConfig}
-  hideLegend={false}
-  style={{
-      marginVertical: 8,
-      borderRadius: 16,
-    }} 
-/>
-</View>
-
-<View>
-<BarChart
- 
-  data={dataBarChart}
-  width={Dimensions.get("window").width -30}
-  height={220}
-  yAxisLabel="Km"
-  chartConfig={chartConfig}
-  verticalLabelRotation={30}
-  style={{
-      marginVertical: 8,
-      borderRadius: 16,
-    }} 
-/>
-</View>
-
-
-
+        <View style={styles.card}>
+          <Text style={styles.innerText}>Car: {car.name}</Text>
+          <Text style={styles.innerText}>Year: {car.year}</Text>
+          <Text style={styles.innerText}>Consumption (L/KM): {car.consumptionPerKm}</Text>
+          <Text style={styles.innerText}>Fuel Tank Capacity (L): {car.fuelTankCapacity}L</Text>
+          <Text style={styles.innerText}>Engine Size: {car.engine}</Text>
+        </View>
+        <View>
+          <ProgressChart
+            data={dataProgressBarFuel}
+            width={Dimensions.get("window").width -30}
+            height={140}
+            strokeWidth={16}
+            radius={32}
+            chartConfig={chartConfig}
+            hideLegend={false}
+            style={{
+                marginVertical: 8,
+                borderRadius: 16,
+              }} 
+          />
+        </View>
+        <View style={{marginBottom: 10}}>
+          <Text>KM Driven Data</Text>
+          <BarChart
+            fromZero
+            data={dataBarChart}
+            width={Dimensions.get("window").width -30}
+            height={220}
+            chartConfig={{
+              backgroundColor: "#233767",
+              backgroundGradientFrom: "#233767",
+              backgroundGradientTo: "#233767",
+              decimalPlaces: 2,
+              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+              style: {
+                borderRadius: 16,
+                paddingBottom: 100
+              }
+            }}
+            verticalLabelRotation={30}
+            style={{
+              borderRadius: 20,
+            }} 
+          />
+        </View>
       </ScrollView>
     </ImageBackground>
   );
 }
+
 //Creating the styles for this screen.
 const styles = StyleSheet.create({
   input: {
@@ -436,7 +382,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#233767",
     borderRadius: 15,
-    
   },
   button: {
     backgroundColor: "#545150",
@@ -454,7 +399,8 @@ const styles = StyleSheet.create({
   },
   innerText: {
     color: 'white',
-    marginHorizontal:20
+    marginHorizontal: 24,
+    fontSize: 18
   },
 
 });
@@ -464,10 +410,10 @@ const chartConfig = {
   backgroundGradientFromOpacity: 1,
   backgroundGradientTo: "#233767",
   backgroundGradientToOpacity: 1,
-  color: (opacity = 1) => `rgba(242, 176, 101, ${opacity})`,
-  strokeWidth: 2, // optional, default 3
+  color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+  labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+  strokeWidth: 1, // optional, default 3
   barPercentage: 0.5,
   useShadowColorFromDataset: false,// optional
-  
-  
+
 };

@@ -127,6 +127,13 @@ export default function MapScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity
+            activeOpacity={1}
+            onPress={handleButtonPress}
+            style={styles.button}
+          >
+            <Text style={styles.buttonText}>Search nearest gas stations</Text>
+          </TouchableOpacity>
       <MapView
         style={styles.map}
         showsUserLocation
@@ -137,15 +144,6 @@ export default function MapScreen({ navigation }) {
           longitudeDelta: 0.0421,
         }}
       >
-        <View>
-          <TouchableOpacity
-            activeOpacity={1}
-            onPress={handleButtonPress}
-            style={styles.button}
-          >
-            <Text style={styles.buttonText}>Search nearest gas stations</Text>
-          </TouchableOpacity>
-        </View>
         {nearbyGasStations.map((gasStation) => (
           <Marker
             key={gasStation.place_id}
