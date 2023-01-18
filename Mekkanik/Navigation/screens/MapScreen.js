@@ -128,17 +128,7 @@ export default function MapScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <MapView
-        style={styles.map}
-        showsUserLocation
-        initialRegion={{
-          latitude: lat,
-          longitude: lon,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        }}
-      >
-        <View>
+      <View>
           <TouchableOpacity
             activeOpacity={1}
             onPress={handleButtonPress}
@@ -151,6 +141,16 @@ export default function MapScreen({ navigation }) {
             </Text>
           </TouchableOpacity>
         </View>
+      <MapView
+        style={styles.map}
+        showsUserLocation
+        initialRegion={{
+          latitude: lat,
+          longitude: lon,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        }}
+      >
         {gasPress &&
           nearbyGasStations.map((gasStation) => (
             <Marker
