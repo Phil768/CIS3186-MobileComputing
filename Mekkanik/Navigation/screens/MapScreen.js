@@ -19,6 +19,7 @@ export default function MapScreen({ navigation }) {
   //console. disableYellowBox = true;
   const [currentLocation, setCurrentLocation] = React.useState(null);
   const [markerPress, setMarkerPress] = React.useState(false);
+  const [gasPress, setGasPress] = React.useState(false);
   const [lon, setLongitude] = useState(14.4845766);
   const [lat, setLatitude] = useState(35.8970063);
   const [nearbyGasStations, setNearbyGasStations] = useState([]);
@@ -101,7 +102,6 @@ export default function MapScreen({ navigation }) {
       longitude: coordinate.longitude,
     });
     getRoute();
-    console.log(markerPress);
   };
 
   const handleDirectionButtonPress = () => {
@@ -109,12 +109,13 @@ export default function MapScreen({ navigation }) {
   };
 
   const handleButtonPress = async () => {
+    setGasPress(!gasPress);
     console.log("Inside function");
     if (lon && lat) {
       console.log("Searching for gas stations.");
       try {
         const response = await fetch(
-          `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lon}&radius=50000&types=gas_station&key=AIzaSyDvuzOm5knBoIB2G1RFVBhAF-DGyYVaB1E`
+          `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lon}&radius=5000&types=gas_station&key=AIzaSyDvuzOm5knBoIB2G1RFVBhAF-DGyYVaB1E`
         );
         const data = await response.json();
         console.log(data);
@@ -143,26 +144,31 @@ export default function MapScreen({ navigation }) {
             onPress={handleButtonPress}
             style={styles.button}
           >
-            <Text style={styles.buttonText}>Search nearest gas stations</Text>
+            <Text style={styles.buttonText}>
+              {gasPress
+                ? "Hide nearest gas stations"
+                : "Show nearest gas stations"}
+            </Text>
           </TouchableOpacity>
         </View>
-        {nearbyGasStations.map((gasStation) => (
-          <Marker
-            key={gasStation.place_id}
-            coordinate={{
-              latitude: gasStation.geometry.location.lat,
-              longitude: gasStation.geometry.location.lng,
-            }}
-            title={gasStation.name}
-            pinColor={"red"}
-            description={gasStation.vicinity}
-            onPress={handleMarkerPress}
-          ></Marker>
-        ))}
+        {gasPress &&
+          nearbyGasStations.map((gasStation) => (
+            <Marker
+              key={gasStation.place_id}
+              coordinate={{
+                latitude: gasStation.geometry.location.lat,
+                longitude: gasStation.geometry.location.lng,
+              }}
+              title={gasStation.name}
+              pinColor={"red"}
+              description={gasStation.vicinity}
+              onPress={handleMarkerPress}
+            ></Marker>
+          ))}
         {markerPress && (
           <Polyline
             coordinates={routeCoordinates}
-            strokeWidth={5}
+            strokeWidth={2}
             strokeColor="red"
           />
         )}

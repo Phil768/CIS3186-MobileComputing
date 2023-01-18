@@ -84,7 +84,7 @@ const MainContainer = ({ route, navigation }) => {
                 }}
               >
                 <Image
-                  source={require("../assets/home.png")}
+                  source={require("../assets/dashboard.png")}
                   resizeMode="contain"
                   style={{
                     width: 25,
@@ -113,7 +113,7 @@ const MainContainer = ({ route, navigation }) => {
             tabBarIcon: ({ focused }) => (
               //Adding custom image.
               <Image
-                source={require("../assets/dashboard.png")}
+                source={require("../assets/map.png")}
                 resizeMode="contain"
                 style={{
                   width: 30,

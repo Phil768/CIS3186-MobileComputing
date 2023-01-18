@@ -9,7 +9,7 @@ import {
   ImageBackground,
   ScrollView,
   Image,
-  Dimensions
+  Dimensions,
 } from "react-native";
 
 import {
@@ -32,7 +32,7 @@ import {
   PieChart,
   ProgressChart,
   ContributionGraph,
-  StackedBarChart
+  StackedBarChart,
 } from "react-native-chart-kit";
 
 export default function HomeScreen(props) {
@@ -64,9 +64,6 @@ export default function HomeScreen(props) {
     console.log("VALUE", value);
     setToggle(!value);
   };
-
-  
-
 
   //Running the above function upon render.
   React.useEffect(() => {
@@ -102,8 +99,6 @@ export default function HomeScreen(props) {
   }
 
   React.useEffect(() => {
-
-
     if (toggle) {
       async function refreshLocation() {
         const location = await getCurrentLocation();
@@ -277,34 +272,31 @@ export default function HomeScreen(props) {
   }, []);
   // Returning the main body to be displayed on screen.
 
-
-const tes = remainingPetrol.toFixed(2);
+  const tes = remainingPetrol.toFixed(2);
 
   const dataProgressBarOil = {
     labels: ["brake", "engine", "cool liqd"], // optional
-    data: [0.65, 0.7, 0.8]
+    data: [0.65, 0.7, 0.8],
   };
 
   const dataProgressBarFuel = {
     labels: ["Elec", "Oil"], // optional
-    data: [0.3,remainingPetrol/props.car.fuelTankCapacity]
+    data: [0.3, remainingPetrol / props.car.fuelTankCapacity],
   };
 
-  const dataLineChartOilCons ={
+  const dataLineChartOilCons = {
     labels: ["October", "November", "December", "January"],
-    datasets: [{data: [32.7, 21.1, 38.9, 45.2,]}]
-};
+    datasets: [{ data: [32.7, 21.1, 38.9, 45.2] }],
+  };
 
-const dataBarChart = {
-  labels: ["Year", "Month", "Day"],
-  datasets: [
-    {
-      data: [kmYearDriven, kmMonthDriven, kmDayDriven]
-    }
-  ]
-};
-
-
+  const dataBarChart = {
+    labels: ["Year", "Month", "Day"],
+    datasets: [
+      {
+        data: [kmYearDriven, kmMonthDriven, kmDayDriven],
+      },
+    ],
+  };
 
   return (
     <ImageBackground
@@ -318,105 +310,102 @@ const dataBarChart = {
       </View>
 
       <ScrollView
-      marginBottom={Dimensions.get("window").height * 0.15}
+        marginBottom={Dimensions.get("window").height * 0.15}
         contentContainerStyle={{
           paddingHorizontal: 15,
-          
         }}
         vertical
         showsVerticalScrollIndicator={false}
       >
+        <View style={styles.card}>
+          <Text style={styles.innerText}>Year: {car.year}</Text>
+          <Text style={styles.innerText}>
+            Consumption (L) per KM: {car.consumptionPerKm}
+          </Text>
+          <Text style={styles.innerText}>
+            Fuel Tank Capacity (L): {car.fuelTankCapacity}
+          </Text>
+          <Text style={styles.innerText}>Engine: {car.engine}</Text>
+        </View>
 
-<View style={styles.card}>
-  <Text style={styles.innerText}>Year: {car.year}</Text>
-  <Text style={styles.innerText}>Consumption (L) per KM: {car.consumptionPerKm}</Text>
-  <Text style={styles.innerText}>Fuel Tank Capacity (L): {car.fuelTankCapacity}</Text>
-  <Text style={styles.innerText}>Engine: {car.engine}</Text>
-</View>
+        <View>
+          <LineChart
+            data={dataLineChartOilCons}
+            width={Dimensions.get("window").width - 30} // from react-native
+            height={220}
+            yAxisLabel=""
+            yAxisSuffix="L"
+            yAxisInterval={1} // optional, defaults to 1
+            chartConfig={{
+              backgroundColor: "#233767",
+              backgroundGradientFrom: "#233767",
+              backgroundGradientTo: "#233767",
+              decimalPlaces: 2, // optional, defaults to 2dp
+              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+              style: {
+                borderRadius: 16,
+              },
+              propsForDots: {
+                r: "6",
+                strokeWidth: "2",
+                stroke: "#ffa726",
+              },
+            }}
+            bezier
+            style={{
+              marginVertical: 8,
+              borderRadius: 16,
+            }}
+          />
+        </View>
 
-<View >
-  <LineChart
-    data={dataLineChartOilCons}
-    width={Dimensions.get("window").width -30} // from react-native
-    height={220}
-    yAxisLabel=""
-    yAxisSuffix="L"
-    yAxisInterval={1} // optional, defaults to 1
-    chartConfig={{
-      backgroundColor: "#233767",
-      backgroundGradientFrom: "#233767",
-      backgroundGradientTo: "#233767",
-      decimalPlaces: 2, // optional, defaults to 2dp
-      color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-      labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-      style: {
-        borderRadius: 16
-      },
-      propsForDots: {
-        r: "6",
-        strokeWidth: "2",
-        stroke: "#ffa726"
-      }
-    }}
-    bezier
-    style={{
-      marginVertical: 8,
-      borderRadius: 16,
+        <View>
+          <ProgressChart
+            data={dataProgressBarOil}
+            width={Dimensions.get("window").width - 30}
+            height={220}
+            strokeWidth={16}
+            radius={32}
+            chartConfig={chartConfig}
+            hideLegend={false}
+            style={{
+              marginVertical: 8,
+              borderRadius: 16,
+            }}
+          />
+        </View>
 
-    }}
-  />
-</View>
+        <View>
+          <ProgressChart
+            data={dataProgressBarFuel}
+            width={Dimensions.get("window").width - 30}
+            height={220}
+            strokeWidth={16}
+            radius={32}
+            chartConfig={chartConfig}
+            hideLegend={false}
+            style={{
+              marginVertical: 8,
+              borderRadius: 16,
+            }}
+          />
+        </View>
 
-<View>
-<ProgressChart
-  data={dataProgressBarOil}
-  width={Dimensions.get("window").width -30}
-  height={220}
-  strokeWidth={16}
-  radius={32}
-  chartConfig={chartConfig}
-  hideLegend={false}
-  style={{
-      marginVertical: 8,
-      borderRadius: 16,
-    }}
-/>
-</View>
-
-<View>
-<ProgressChart
-  data={dataProgressBarFuel}
-  width={Dimensions.get("window").width -30}
-  height={220}
-  strokeWidth={16}
-  radius={32}
-  chartConfig={chartConfig}
-  hideLegend={false}
-  style={{
-      marginVertical: 8,
-      borderRadius: 16,
-    }} 
-/>
-</View>
-
-<View>
-<BarChart
- 
-  data={dataBarChart}
-  width={Dimensions.get("window").width -30}
-  height={220}
-  yAxisLabel="Km"
-  chartConfig={chartConfig}
-  verticalLabelRotation={30}
-  style={{
-      marginVertical: 8,
-      borderRadius: 16,
-    }} 
-/>
-</View>
-
-
-
+        <View>
+          <BarChart
+            data={dataBarChart}
+            width={Dimensions.get("window").width - 30}
+            height={220}
+            yAxisLabel="Km"
+            chartConfig={chartConfig}
+            verticalLabelRotation={30}
+            style={{
+              marginVertical: 8,
+              borderRadius: 16,
+            }}
+          />
+        </View>
       </ScrollView>
     </ImageBackground>
   );
@@ -431,12 +420,11 @@ const styles = StyleSheet.create({
   },
   card: {
     height: 220,
-    width: Dimensions.get("window").width -30,
+    width: Dimensions.get("window").width - 30,
     marginVertical: 8,
     justifyContent: "center",
     backgroundColor: "#233767",
     borderRadius: 15,
-    
   },
   button: {
     backgroundColor: "#545150",
@@ -453,10 +441,13 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   innerText: {
-    color: 'white',
-    marginHorizontal:20
+    color: "white",
+    marginHorizontal: 20,
   },
-
+  container: {
+    padding: 10,
+    marginHorizontal: 5,
+  },
 });
 
 const chartConfig = {
@@ -467,7 +458,5 @@ const chartConfig = {
   color: (opacity = 1) => `rgba(242, 176, 101, ${opacity})`,
   strokeWidth: 2, // optional, default 3
   barPercentage: 0.5,
-  useShadowColorFromDataset: false,// optional
-  
-  
+  useShadowColorFromDataset: false, // optional
 };
