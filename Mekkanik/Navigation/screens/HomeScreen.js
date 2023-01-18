@@ -9,7 +9,7 @@ import {
   ImageBackground,
   ScrollView,
   Image,
-  Dimensions
+  Dimensions,
 } from "react-native";
 
 import {
@@ -32,7 +32,7 @@ import {
   PieChart,
   ProgressChart,
   ContributionGraph,
-  StackedBarChart
+  StackedBarChart,
 } from "react-native-chart-kit";
 
 export default function HomeScreen(props) {
@@ -69,9 +69,6 @@ export default function HomeScreen(props) {
     setToggle(!value);
   };
 
-  
-
-
   //Running the above function upon render.
   React.useEffect(() => {
     getData();
@@ -106,8 +103,6 @@ export default function HomeScreen(props) {
   }
 
   React.useEffect(() => {
-
-
     if (toggle) {
       async function refreshLocation() {
         const location = await getCurrentLocation();
@@ -258,7 +253,8 @@ export default function HomeScreen(props) {
     querySnapshot.forEach((documentSnapshot) => {
       var data = documentSnapshot.data();
       //Calculatinf the current petrol used using basic arithmetic.
-      currentPetrolUsed = currentPetrolUsed + data.kmDriven * props.car.consumptionPerKm;
+      currentPetrolUsed =
+        currentPetrolUsed + data.kmDriven * props.car.consumptionPerKm;
     });
     //Setting the remaining petrol based on the current fuel tank capacity and the petrol used in session.
     setRemainingPetrol(props.car.fuelTankCapacity - currentPetrolUsed);
@@ -283,16 +279,16 @@ export default function HomeScreen(props) {
   // Returning the main body to be displayed on screen.
   const dataProgressBarFuel = {
     labels: ["Fuel"], // optional
-    data: [remainingPetrol/props.car.fuelTankCapacity]
+    data: [remainingPetrol / props.car.fuelTankCapacity],
   };
 
   const dataBarChart = {
     labels: ["Year", "Month", "Day"],
     datasets: [
       {
-        data: [kmYearDriven, kmMonthDriven, kmDayDriven]
-      }
-    ]
+        data: [kmYearDriven, kmMonthDriven, kmDayDriven],
+      },
+    ],
   };
 
   return (
@@ -309,40 +305,43 @@ export default function HomeScreen(props) {
       <ScrollView
         marginBottom={Dimensions.get("window").height * 0.15}
         contentContainerStyle={{
-          paddingHorizontal: 15
+          paddingHorizontal: 15,
         }}
         vertical
         showsVerticalScrollIndicator={false}
       >
-
         <View style={styles.card}>
           <Text style={styles.innerText}>Car: {car.name}</Text>
           <Text style={styles.innerText}>Year: {car.year}</Text>
-          <Text style={styles.innerText}>Consumption (L/KM): {car.consumptionPerKm}</Text>
-          <Text style={styles.innerText}>Fuel Tank Capacity (L): {car.fuelTankCapacity}L</Text>
+          <Text style={styles.innerText}>
+            Consumption (L/KM): {car.consumptionPerKm}
+          </Text>
+          <Text style={styles.innerText}>
+            Fuel Tank Capacity (L): {car.fuelTankCapacity}L
+          </Text>
           <Text style={styles.innerText}>Engine Size: {car.engine}</Text>
         </View>
         <View>
           <ProgressChart
             data={dataProgressBarFuel}
-            width={Dimensions.get("window").width -30}
+            width={Dimensions.get("window").width - 30}
             height={140}
             strokeWidth={16}
             radius={32}
             chartConfig={chartConfig}
             hideLegend={false}
             style={{
-                marginVertical: 8,
-                borderRadius: 16,
-              }} 
+              marginVertical: 8,
+              borderRadius: 16,
+            }}
           />
         </View>
-        <View style={{marginBottom: 10}}>
+        <View style={{ marginBottom: 10 }}>
           <Text>KM Driven Data</Text>
           <BarChart
             fromZero
             data={dataBarChart}
-            width={Dimensions.get("window").width -30}
+            width={Dimensions.get("window").width - 30}
             height={220}
             chartConfig={{
               backgroundColor: "#233767",
@@ -353,13 +352,13 @@ export default function HomeScreen(props) {
               labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
               style: {
                 borderRadius: 16,
-                paddingBottom: 100
-              }
+                paddingBottom: 100,
+              },
             }}
             verticalLabelRotation={30}
             style={{
               borderRadius: 20,
-            }} 
+            }}
           />
         </View>
       </ScrollView>
@@ -377,7 +376,7 @@ const styles = StyleSheet.create({
   },
   card: {
     height: 220,
-    width: Dimensions.get("window").width -30,
+    width: Dimensions.get("window").width - 30,
     marginVertical: 8,
     justifyContent: "center",
     backgroundColor: "#233767",
@@ -398,11 +397,14 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   innerText: {
-    color: 'white',
+    color: "white",
     marginHorizontal: 24,
-    fontSize: 18
+    fontSize: 18,
   },
-
+  container: {
+    padding: 10,
+    marginHorizontal: 5,
+  },
 });
 
 const chartConfig = {
@@ -414,6 +416,5 @@ const chartConfig = {
   labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
   strokeWidth: 1, // optional, default 3
   barPercentage: 0.5,
-  useShadowColorFromDataset: false,// optional
-
+  useShadowColorFromDataset: false, // optional
 };
