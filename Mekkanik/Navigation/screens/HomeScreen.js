@@ -65,20 +65,7 @@ export default function HomeScreen(props) {
     setToggle(!value);
   };
 
-  const dataProgressBarOil = {
-    labels: ["brake", "engine", "cool liqd"], // optional
-    data: [0.65, 0.7, 0.8]
-  };
-
-  const dataProgressBarFuel = {
-    labels: ["Elec", "Oil"], // optional
-    data: [0.3, 0.7]
-  };
-
-  const dataLineChartOilCons ={
-    labels: ["October", "November", "December", "January"],
-    datasets: [{data: [32.7, 21.1, 38.9, 45.2,]}]
-};
+  
 
 
   //Running the above function upon render.
@@ -289,6 +276,36 @@ export default function HomeScreen(props) {
     return () => clearInterval(intervalId);
   }, []);
   // Returning the main body to be displayed on screen.
+
+
+const tes = remainingPetrol.toFixed(2);
+
+  const dataProgressBarOil = {
+    labels: ["brake", "engine", "cool liqd"], // optional
+    data: [0.65, 0.7, 0.8]
+  };
+
+  const dataProgressBarFuel = {
+    labels: ["Elec", "Oil"], // optional
+    data: [0.3,remainingPetrol/props.car.fuelTankCapacity]
+  };
+
+  const dataLineChartOilCons ={
+    labels: ["October", "November", "December", "January"],
+    datasets: [{data: [32.7, 21.1, 38.9, 45.2,]}]
+};
+
+const dataBarChart = {
+  labels: ["Year", "Month", "Day"],
+  datasets: [
+    {
+      data: [kmYearDriven, kmMonthDriven, kmDayDriven]
+    }
+  ]
+};
+
+
+
   return (
     <ImageBackground
       source={imageBg}
@@ -309,6 +326,13 @@ export default function HomeScreen(props) {
         vertical
         showsVerticalScrollIndicator={false}
       >
+
+<View style={styles.card}>
+  <Text style={styles.innerText}>Year: {car.year}</Text>
+  <Text style={styles.innerText}>Consumption (L) per KM: {car.consumptionPerKm}</Text>
+  <Text style={styles.innerText}>Fuel Tank Capacity (L): {car.fuelTankCapacity}</Text>
+  <Text style={styles.innerText}>Engine: {car.engine}</Text>
+</View>
 
 <View >
   <LineChart
@@ -374,8 +398,25 @@ export default function HomeScreen(props) {
     }} 
 />
 </View>
-      
-        
+
+<View>
+<BarChart
+ 
+  data={dataBarChart}
+  width={Dimensions.get("window").width -30}
+  height={220}
+  yAxisLabel="Km"
+  chartConfig={chartConfig}
+  verticalLabelRotation={30}
+  style={{
+      marginVertical: 8,
+      borderRadius: 16,
+    }} 
+/>
+</View>
+
+
+
       </ScrollView>
     </ImageBackground>
   );
@@ -389,13 +430,13 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   card: {
-    height: 200,
-    width: 300,
-
+    height: 220,
+    width: Dimensions.get("window").width -30,
+    marginVertical: 8,
     justifyContent: "center",
-    backgroundColor: "#DDDDDD",
-    margin: 15,
+    backgroundColor: "#233767",
     borderRadius: 15,
+    
   },
   button: {
     backgroundColor: "#545150",
@@ -411,8 +452,9 @@ const styles = StyleSheet.create({
     fontFamily: "Helvetica",
     fontWeight: "bold",
   },
-  container: {
-   
+  innerText: {
+    color: 'white',
+    marginHorizontal:20
   },
 
 });
