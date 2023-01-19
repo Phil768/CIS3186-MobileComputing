@@ -56,7 +56,7 @@ export default function SettingsScreen(props) {
         );
       });
   };
-  //Deleting the element.
+  // Deleting the element.
   const deleteItem = async () => {
     try {
       await deleteDoc(doc(db, "Cars", props.car.id));
@@ -111,15 +111,44 @@ export default function SettingsScreen(props) {
 
   //Mock a moving car - update database with mock values as if car is moving
   const mockMovingCar = async () => {
-    console.log("TEST");
-    const docRef = await addDoc(collection(db, "CarRuns"), {
-      carId: props.car.id,
-      kmDriven: 50,
-      day: todaysDay,
-      month: todaysMonth,
-      year: todaysYear,
-      isActive: true,
+    // Attribute initialisation
+    let currentPetrolUsed = 0;
+    let remainingPetrol = props.car.fuelTankCapacity;
+    const query = db
+      .collection("CarRuns")
+      .where("carId", "==", props.car.id)
+      .where("isActive", "==", true);
+
+    const querySnapshot = await getDocs(query);
+
+    querySnapshot.forEach((documentSnapshot) => {
+      var data = documentSnapshot.data();
+      // Calculating the current petrol used using basic arithmetic.
+      currentPetrolUsed = currentPetrolUsed + data.kmDriven * props.car.consumptionPerKm;
     });
+    remainingPetrol = props.car.fuelTankCapacity - currentPetrolUsed;
+    if (remainingPetrol / props.car.fuelTankCapacity <= 0.15){
+      // Sending an alert that you do not have sufficient fuel to Mock moving car
+      Alert.alert(
+        "Insufficient Fuel",
+        "Insufficient fuel to mock a moving car. Navigate to the Map Screen to find gas stations near your current area.",
+        [{ text: "OK", onPress: () => console.log("OK Pressed") }]
+      );
+    } else {
+      const docRef = await addDoc(collection(db, "CarRuns"), {
+        carId: props.car.id,
+        kmDriven: 50,
+        day: todaysDay,
+        month: todaysMonth,
+        year: todaysYear,
+        isActive: true,
+      });
+      Alert.alert(
+        "Car movement mocked successfully.",
+        "Navigate to the Home Screen to see the new updates.",
+        [{ text: "OK", onPress: () => console.log("OK Pressed") }]
+      );
+    }
   };
   //Returning the main body of the function to be displayed on screen.
   return (
@@ -132,7 +161,7 @@ export default function SettingsScreen(props) {
           <Text style={styles.buttonText}>Logout</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={changeCar} style={styles.button}>
-          <Text style={styles.buttonText}>Change car</Text>
+          <Text style={styles.buttonText}>Change Car</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={resetCar} style={styles.button}>
           <Text style={styles.buttonText}>Reset Car</Text>
@@ -166,7 +195,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#fff",
     fontSize: 18,
-    fontFamily: "Helvetica",
+    fontFamily: "Roboto",
     fontWeight: "bold",
   },
   container: {

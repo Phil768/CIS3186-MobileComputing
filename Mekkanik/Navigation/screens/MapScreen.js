@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#fff",
     fontSize: 18,
-    fontFamily: "Helvetica",
+    fontFamily: "Roboto",
     fontWeight: "bold",
   },
   directionsButtonClicked: {

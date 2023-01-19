@@ -10,6 +10,7 @@ import {
   ScrollView,
   Image,
   Dimensions,
+  Alert
 } from "react-native";
 
 import {
@@ -49,15 +50,60 @@ export default function HomeScreen(props) {
   );
   const oilAverage = 4.5;
   const oilConsumptionAverage = 0.05;
-
   const [carRuns, setCarRuns] = React.useState([]);
   const [currentLocation, setCurrentLocation] = React.useState(null);
   const [previousLocation, setPreviousLocation] = React.useState(null);
   //Creating the appropriate constants to store the needed data.
+  let remainingFuelPercentage;
+  if (remainingPetrol / props.car.fuelTankCapacity <= 0){
+    remainingFuelPercentage = 0;
+  } else {
+    remainingFuelPercentage = remainingPetrol / props.car.fuelTankCapacity;
+  }
   const currentUser = auth.currentUser;
   const today = new Date();
   const todaysDay = today.getDate();
   const todaysMonth = today.getMonth() + 1;
+  let todaysMonthLetters;
+  switch(todaysMonth){
+    case 1:
+      todaysMonthLetters = "Jan";
+    break;
+    case 2:
+      todaysMonthLetters = "Feb";
+    break;
+    case 3:
+      todaysMonthLetters = "Mar";
+    break;
+    case 4:
+      todaysMonthLetters = "Apr";
+    break;
+    case 5:
+      todaysMonthLetters = "May";
+    break;
+    case 6:
+      todaysMonthLetters = "Jun";
+    break;
+    case 7:
+      todaysMonthLetters = "Jul";
+    break;
+    case 8:
+      todaysMonthLetters = "Aug";
+    break;
+    case 9:
+      todaysMonthLetters = "Sep";
+    break;
+    case 10:
+      todaysMonthLetters = "Oct";
+    break;
+    case 11:
+      todaysMonthLetters = "Nov";
+    break;
+    case 12:
+      todaysMonthLetters = "Dec";
+    break;
+
+  }
   const todaysYear = today.getFullYear();
   //Importing the background image.
   const imageBg = require("../../assets/imageBg.png");
@@ -66,7 +112,7 @@ export default function HomeScreen(props) {
     const query = doc(db, "Cars", props.car.id);
     const querySnapshot = await getDoc(query);
     let value = querySnapshot.data().toggle;
-    console.log("VALUE", value);
+    console.log("TOGGLE", value);
     setToggle(!value);
   };
 
@@ -254,9 +300,8 @@ export default function HomeScreen(props) {
 
     querySnapshot.forEach((documentSnapshot) => {
       var data = documentSnapshot.data();
-      //Calculatinf the current petrol used using basic arithmetic.
-      currentPetrolUsed =
-        currentPetrolUsed + data.kmDriven * props.car.consumptionPerKm;
+      //Calculating the current petrol used using basic arithmetic.
+      currentPetrolUsed = currentPetrolUsed + data.kmDriven * props.car.consumptionPerKm;
     });
     //Setting the remaining petrol based on the current fuel tank capacity and the petrol used in session.
     setRemainingPetrol(props.car.fuelTankCapacity - currentPetrolUsed);
@@ -283,12 +328,12 @@ export default function HomeScreen(props) {
     labels: ["Oil", "Fuel"], // optional
     data: [
       (oilAverage - oilConsumptionAverage * kmDayDriven) / oilAverage,
-      remainingPetrol / props.car.fuelTankCapacity,
+      remainingFuelPercentage,
     ],
   };
 
   const dataBarChart = {
-    labels: ["Year", "Month", "Day"],
+    labels: [`Year - ${todaysYear}`, `Month - ${todaysMonthLetters}`, `Day - ${todaysDay}`],
     datasets: [
       {
         data: [kmYearDriven, kmMonthDriven, kmDayDriven],
@@ -304,7 +349,7 @@ export default function HomeScreen(props) {
       <View style={styles.container}>
         <TouchableOpacity onPress={handleToggle} style={styles.button}>
           <Text style={styles.buttonText}>
-            {toggle ? "Pause journey" : "Start journey"}
+            {toggle ? "Pause Journey" : "Start Journey"}
           </Text>
         </TouchableOpacity>
       </View>
@@ -317,7 +362,7 @@ export default function HomeScreen(props) {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.titleContainer}>
-          <Text style={styles.titleText}>Car details</Text>
+          <Text style={styles.titleText}>General Car Details:</Text>
         </View>
         <View style={styles.card}>
           <Text style={styles.innerText}>Model: {car.name}</Text>
@@ -332,7 +377,7 @@ export default function HomeScreen(props) {
         </View>
         <View>
           <View style={styles.titleContainer}>
-            <Text style={styles.titleText}>Total fuel remaining</Text>
+            <Text style={styles.titleText}>Fuel Status:</Text>
           </View>
           <ProgressChart
             data={dataProgressBarFuel}
@@ -340,7 +385,17 @@ export default function HomeScreen(props) {
             height={160}
             strokeWidth={16}
             radius={32}
-            chartConfig={chartConfig}
+            chartConfig={{
+              backgroundGradientFrom: "#233767",
+              backgroundGradientFromOpacity: 1,
+              backgroundGradientTo: "#233767",
+              backgroundGradientToOpacity: 1,
+              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+              strokeWidth: 1, // optional, default 3
+              barPercentage: 0.5,
+              useShadowColorFromDataset: false, // optional
+            }}
             hideLegend={false}
             style={{
               marginVertical: 8,
@@ -350,7 +405,7 @@ export default function HomeScreen(props) {
         </View>
         <View style={{ marginBottom: 10 }}>
           <View style={styles.titleContainer}>
-            <Text style={styles.titleText}>Kilometers(KM) driven</Text>
+            <Text style={styles.titleText}>Driving Breakdown:</Text>
           </View>
           <BarChart
             fromZero
@@ -403,16 +458,15 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#fff",
     fontSize: 18,
-    fontFamily: "Helvetica",
+    fontFamily: "Roboto",
     fontWeight: "bold",
   },
   innerText: {
     color: "white",
     marginHorizontal: 24,
-    fontSize: 18,
+    fontSize: 16,
     marginBottom: 8,
     fontWeight: "bold",
-    fontStyle: "italic",
   },
   container: {
     padding: 10,
@@ -421,22 +475,11 @@ const styles = StyleSheet.create({
   titleContainer: {
     padding: 8,
     marginTop: 5,
+
   },
   titleText: {
-    fontSize: 17,
+    fontSize: 20,
     fontWeight: "bold",
-    fontStyle: "italic",
+    color: "white"
   },
 });
-
-const chartConfig = {
-  backgroundGradientFrom: "#233767",
-  backgroundGradientFromOpacity: 1,
-  backgroundGradientTo: "#233767",
-  backgroundGradientToOpacity: 1,
-  color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-  labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-  strokeWidth: 1, // optional, default 3
-  barPercentage: 0.5,
-  useShadowColorFromDataset: false, // optional
-};

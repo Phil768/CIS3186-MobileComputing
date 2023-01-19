@@ -141,7 +141,7 @@ const AddCarToList = ({ navigation }) => {
           renderItem={({ item }) => (
             <TouchableOpacity
               style={{
-                margin: 5,
+                margin: 1,
               }}
               onPress={() => {
                 addCar(item.value);
@@ -165,23 +165,23 @@ const styles = StyleSheet.create({
   },
   textInput: {
     fontSize: 20,
-    height: 45,
+    height: 40,
     borderRadius: 10,
     padding: 7,
     marginTop: 20,
     marginVertical: 10,
     marginHorizontal: 10,
-    backgroundColor: "#DDDDDD",
+    backgroundColor: "#C6C6C6",
   },
   item: {
     marginTop: 20,
     padding: 20,
     marginHorizontal: 10,
     marginTop: 20,
-    borderRadius: 0,
+    borderRadius: 30,
     borderWidth: 2,
     borderBottomColor: "black",
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "white",
   },
   mainInput: {
     fontSize: 17,

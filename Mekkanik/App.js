@@ -7,6 +7,7 @@ import MainContainer from "./Navigation/MainContainer";
 import CarLists from "./Navigation/screens/CarLists";
 import AddCarToList from "./Navigation/screens/AddCarToList";
 import LoginSignupPage from "./Navigation/screens/LoginSignup";
+import RegisterPage from "./Navigation/screens/RegisterPage"
 import SettingsScreen from "./Navigation/screens/SettingsScreen";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -62,6 +63,7 @@ const App = () => {
     <NavigationContainer independent={true}>
       <Stack.Navigator initialRouteName={isLoggedIn ? "List" : "Login"}>
         <Stack.Screen name="Login" component={LoginSignupPage} />
+        <Stack.Screen name="Register" component={RegisterPage} />
         <Stack.Screen
           name="List"
           component={CarLists}
@@ -102,7 +104,7 @@ const App = () => {
 const styles = StyleSheet.create({
   button: {
     backgroundColor: "#545150",
-    height: 35,
+    height: 40,
     alignItems: "center",
     justifyContent: "center",
     marginHorizontal: 10,
@@ -113,7 +115,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#fff",
     fontSize: 17,
-    fontFamily: "Helvetica",
+    fontFamily: "Roboto",
     fontWeight: "bold",
   },
 });

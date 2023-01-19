@@ -11,40 +11,38 @@ import {
   Image,
   Alert,
 } from "react-native";
-import firebase from "firebase/compat/app";
 import { auth, db } from "../../configurations/index";
-import CarLists from "./CarLists";
 //Main function of the screen.
-const LoginSignupPage = ({ navigation }) => {
+const RegisterPage = ({ navigation }) => {
+
   //Creating the required states for the below function.
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+
   //Getting the image for the background.
   const imageBg = require("../../assets/imageBg.png");
-  //When the user successfully logs in.
-  handleLogin = () => {
+  //When the user has no prior account and wants to create one. Firebase handles everything.
+  handleSignup = () => {
     auth
-      .signInWithEmailAndPassword(email, password)
+      .createUserWithEmailAndPassword(email, password)
       .then((user) => {
-        //Login successful
-        //Navigate to First Screen
+        //Signup successful
         console.log(user);
+        Alert.alert(
+          "Welcome",
+          "Welcome to Mekkanik. We hope you enjoy your stay!",
+          [{ text: "OK", onPress: () => console.log("OK Pressed") }]
+        );
         navigation.navigate("List");
       })
       .catch((error) => {
-        //Login failed
-        console.log(error);
         Alert.alert(
-          "Login failed",
-          "Make sure that credentials are entered correctly.",
+          "Creation of new account failed",
+          "Make sure that the password entered is not weak or that the email entered is not already registered.",
           [{ text: "OK", onPress: () => console.log("OK Pressed") }]
         );
       });
   };
-  const redirectToSignupPage = () => {
-    navigation.navigate("Register");
-  }
   //Returning the main body of the application which will be viewed on screen.
   return (
     <ImageBackground
@@ -66,11 +64,8 @@ const LoginSignupPage = ({ navigation }) => {
           style={styles.textInp2}
         />
         <View>
-          <TouchableOpacity onPress={handleLogin} style={styles.button}>
-            <Text style={styles.buttonText}>Login</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={redirectToSignupPage} style={styles.button}>
-            <Text style={styles.buttonText}>Sign Up</Text>
+          <TouchableOpacity onPress={handleSignup} style={styles.button}>
+            <Text style={styles.buttonText}>Create your account</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.container}>
@@ -137,4 +132,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginSignupPage;
+export default RegisterPage;

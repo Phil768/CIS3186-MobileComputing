@@ -104,13 +104,13 @@ const styles = StyleSheet.create({
   item: {
     marginTop: 20,
     padding: 20,
-    fontSize: 17,
+    fontSize: 18,
     marginHorizontal: 10,
     marginTop: 20,
-    borderRadius: 0,
+    borderRadius: 30,
     borderWidth: 2,
     borderBottomColor: "black",
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "white",
   },
   input: {
     height: 40,
