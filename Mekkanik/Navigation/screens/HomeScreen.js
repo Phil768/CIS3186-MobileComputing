@@ -53,6 +53,8 @@ export default function HomeScreen(props) {
   const [carRuns, setCarRuns] = React.useState([]);
   const [currentLocation, setCurrentLocation] = React.useState(null);
   const [previousLocation, setPreviousLocation] = React.useState(null);
+  const [carAlert, setCarAlert] = React.useState(false);
+  const [oilAlert, setOilAlert] = React.useState(false);
   //Calculating the remaining fuel.
   let remainingFuelPercentage;
   if (remainingPetrol / props.car.fuelTankCapacity <= 0) {
@@ -316,6 +318,7 @@ export default function HomeScreen(props) {
     setRemainingPetrol(props.car.fuelTankCapacity - currentPetrolUsed);
     setRemainingOil(oilAverage - currentOilUsed);
   };
+
   //Using react's useEffect in order to get the data automatically once the page has loaded.
   React.useEffect(() => {
     getCarData();
@@ -332,7 +335,32 @@ export default function HomeScreen(props) {
     }, 5000);
     return () => clearInterval(intervalId);
   }, []);
-
+  //useEffect to check if a warning alert should be displayed.
+  React.useEffect(() => {
+    //getCurrentFuelData();
+    console.log(
+      "FUEL AND OIL: ",
+      remainingPetrol,
+      props.car.fuelTankCapacity,
+      remainingOil,
+      oilAverage
+    );
+    if (remainingPetrol / props.car.fuelTankCapacity <= 0.2 && !carAlert) {
+      Alert.alert(
+        "Fluids alert!",
+        "Fuel or oil are almost empty, visit the Map page to view all the gas stations near you.",
+        [{ text: "OK", onPress: () => console.log("OK Pressed") }]
+      );
+      setCarAlert(true);
+    } else if (remainingOil / oilAverage <= 0.2 && !oilAlert) {
+      Alert.alert(
+        "Fluids alert!",
+        "Fuel or oil are almost empty, visit the Map page to view all the gas stations near you.",
+        [{ text: "OK", onPress: () => console.log("OK Pressed") }]
+      );
+      setOilAlert(true);
+    }
+  }, [remainingPetrol, remainingOil]);
   // Returning the main body to be displayed on screen.
   const dataProgressBarFuel = {
     labels: ["Oil", "Fuel"], // optional
@@ -469,7 +497,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#fff",
     fontSize: 18,
-    fontFamily: "Roboto",
+    fontFamily: "Arial",
     fontWeight: "bold",
   },
   innerText: {

@@ -44,7 +44,7 @@ const LoginSignupPage = ({ navigation }) => {
   };
   const redirectToSignupPage = () => {
     navigation.navigate("Register");
-  }
+  };
   //Returning the main body of the application which will be viewed on screen.
   return (
     <ImageBackground
@@ -69,7 +69,10 @@ const LoginSignupPage = ({ navigation }) => {
           <TouchableOpacity onPress={handleLogin} style={styles.button}>
             <Text style={styles.buttonText}>Login</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={redirectToSignupPage} style={styles.button}>
+          <TouchableOpacity
+            onPress={redirectToSignupPage}
+            style={styles.button}
+          >
             <Text style={styles.buttonText}>Sign Up</Text>
           </TouchableOpacity>
         </View>
@@ -116,7 +119,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#fff",
     fontSize: 18,
-    fontFamily: "Roboto",
+    fontFamily: "Arial",
     fontWeight: "bold",
   },
   container: {
@@ -131,7 +134,7 @@ const styles = StyleSheet.create({
   imageText: {
     color: "#545150",
     fontSize: 35,
-    fontFamily: "Roboto",
+    fontFamily: "Arial",
     fontWeight: "bold",
     fontStyle: "italic",
   },

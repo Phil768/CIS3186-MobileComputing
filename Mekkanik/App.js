@@ -7,7 +7,7 @@ import MainContainer from "./Navigation/MainContainer";
 import CarLists from "./Navigation/screens/CarLists";
 import AddCarToList from "./Navigation/screens/AddCarToList";
 import LoginSignupPage from "./Navigation/screens/LoginSignup";
-import RegisterPage from "./Navigation/screens/RegisterPage"
+import RegisterPage from "./Navigation/screens/RegisterPage";
 import SettingsScreen from "./Navigation/screens/SettingsScreen";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#fff",
     fontSize: 17,
-    fontFamily: "Roboto",
+    fontFamily: "Arial",
     fontWeight: "bold",
   },
 });

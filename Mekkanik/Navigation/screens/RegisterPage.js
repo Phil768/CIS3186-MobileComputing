@@ -14,7 +14,6 @@ import {
 import { auth, db } from "../../configurations/index";
 //Main function of the screen.
 const RegisterPage = ({ navigation }) => {
-
   //Creating the required states for the below function.
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -111,7 +110,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#fff",
     fontSize: 18,
-    fontFamily: "Roboto",
+    fontFamily: "Arial",
     fontWeight: "bold",
   },
   container: {
@@ -126,7 +125,7 @@ const styles = StyleSheet.create({
   imageText: {
     color: "#545150",
     fontSize: 35,
-    fontFamily: "Roboto",
+    fontFamily: "Arial",
     fontWeight: "bold",
     fontStyle: "italic",
   },

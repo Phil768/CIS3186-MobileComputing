@@ -124,10 +124,11 @@ export default function SettingsScreen(props) {
     querySnapshot.forEach((documentSnapshot) => {
       var data = documentSnapshot.data();
       // Calculating the current petrol used using basic arithmetic.
-      currentPetrolUsed = currentPetrolUsed + data.kmDriven * props.car.consumptionPerKm;
+      currentPetrolUsed =
+        currentPetrolUsed + data.kmDriven * props.car.consumptionPerKm;
     });
     remainingPetrol = props.car.fuelTankCapacity - currentPetrolUsed;
-    if (remainingPetrol / props.car.fuelTankCapacity <= 0.15){
+    if (remainingPetrol / props.car.fuelTankCapacity <= 0.15) {
       // Sending an alert that you do not have sufficient fuel to Mock moving car
       Alert.alert(
         "Insufficient Fuel",
@@ -195,7 +196,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#fff",
     fontSize: 18,
-    fontFamily: "Roboto",
+    fontFamily: "Arial",
     fontWeight: "bold",
   },
   container: {
