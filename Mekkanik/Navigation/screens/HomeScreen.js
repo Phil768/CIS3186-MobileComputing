@@ -10,7 +10,7 @@ import {
   ScrollView,
   Image,
   Dimensions,
-  Alert
+  Alert,
 } from "react-native";
 
 import {
@@ -43,66 +43,83 @@ export default function HomeScreen(props) {
   const [kmYearDriven, setKmYearDriven] = React.useState(0);
   const [kmMonthDriven, setKmMonthDriven] = React.useState(0);
   const [kmDayDriven, setKmDayDriven] = React.useState(0);
-  const [remainingOil, setRemainingOil] = React.useState(0);
   const [toggle, setToggle] = React.useState(false);
   const [remainingPetrol, setRemainingPetrol] = React.useState(
     props.car.fuelTankCapacity
   );
-  const oilAverage = 4.5;
-  const oilConsumptionAverage = 0.05;
+  const oilAverage = 5.0;
+  const oilConsumptionAverage = 0.005;
+  const [remainingOil, setRemainingOil] = React.useState(oilAverage);
   const [carRuns, setCarRuns] = React.useState([]);
   const [currentLocation, setCurrentLocation] = React.useState(null);
   const [previousLocation, setPreviousLocation] = React.useState(null);
-  //Creating the appropriate constants to store the needed data.
+  //Calculating the remaining fuel.
   let remainingFuelPercentage;
-  if (remainingPetrol / props.car.fuelTankCapacity <= 0){
+  if (remainingPetrol / props.car.fuelTankCapacity <= 0) {
+    Alert.alert("Insufficient fuel", "Fuel tank is empty.", [
+      { text: "OK", onPress: () => console.log("OK Pressed") },
+    ]);
     remainingFuelPercentage = 0;
   } else {
     remainingFuelPercentage = remainingPetrol / props.car.fuelTankCapacity;
+    if (remainingFuelPercentage <= 0.1) {
+      Alert.alert(
+        "Low fuel",
+        "Fuel level is low. Please refill soon to avoid engine damage.",
+        [{ text: "OK", onPress: () => console.log("OK Pressed") }]
+      );
+    }
   }
+  //Calculating the remaining oil.
+  let remainingOilPercentage;
+  if (remainingOil / oilAverage <= 0) {
+    remainingOilPercentage = 0;
+  } else {
+    remainingOilPercentage = remainingOil / oilAverage;
+  }
+  //Creating the appropriate constants to store the needed data.
   const currentUser = auth.currentUser;
   const today = new Date();
   const todaysDay = today.getDate();
   const todaysMonth = today.getMonth() + 1;
   let todaysMonthLetters;
-  switch(todaysMonth){
+  switch (todaysMonth) {
     case 1:
       todaysMonthLetters = "Jan";
-    break;
+      break;
     case 2:
       todaysMonthLetters = "Feb";
-    break;
+      break;
     case 3:
       todaysMonthLetters = "Mar";
-    break;
+      break;
     case 4:
       todaysMonthLetters = "Apr";
-    break;
+      break;
     case 5:
       todaysMonthLetters = "May";
-    break;
+      break;
     case 6:
       todaysMonthLetters = "Jun";
-    break;
+      break;
     case 7:
       todaysMonthLetters = "Jul";
-    break;
+      break;
     case 8:
       todaysMonthLetters = "Aug";
-    break;
+      break;
     case 9:
       todaysMonthLetters = "Sep";
-    break;
+      break;
     case 10:
       todaysMonthLetters = "Oct";
-    break;
+      break;
     case 11:
       todaysMonthLetters = "Nov";
-    break;
+      break;
     case 12:
       todaysMonthLetters = "Dec";
-    break;
-
+      break;
   }
   const todaysYear = today.getFullYear();
   //Importing the background image.
@@ -301,10 +318,13 @@ export default function HomeScreen(props) {
     querySnapshot.forEach((documentSnapshot) => {
       var data = documentSnapshot.data();
       //Calculating the current petrol used using basic arithmetic.
-      currentPetrolUsed = currentPetrolUsed + data.kmDriven * props.car.consumptionPerKm;
+      currentPetrolUsed =
+        currentPetrolUsed + data.kmDriven * props.car.consumptionPerKm;
+      currentOilUsed = currentOilUsed + data.kmDriven * oilConsumptionAverage;
     });
     //Setting the remaining petrol based on the current fuel tank capacity and the petrol used in session.
     setRemainingPetrol(props.car.fuelTankCapacity - currentPetrolUsed);
+    setRemainingOil(oilAverage - currentOilUsed);
   };
   //Using react's useEffect in order to get the data automatically once the page has loaded.
   React.useEffect(() => {
@@ -326,14 +346,15 @@ export default function HomeScreen(props) {
   // Returning the main body to be displayed on screen.
   const dataProgressBarFuel = {
     labels: ["Oil", "Fuel"], // optional
-    data: [
-      (oilAverage - oilConsumptionAverage * kmDayDriven) / oilAverage,
-      remainingFuelPercentage,
-    ],
+    data: [remainingOilPercentage, remainingFuelPercentage],
   };
 
   const dataBarChart = {
-    labels: [`Year - ${todaysYear}`, `Month - ${todaysMonthLetters}`, `Day - ${todaysDay}`],
+    labels: [
+      `Year - ${todaysYear}`,
+      `Month - ${todaysMonthLetters}`,
+      `Day - ${todaysDay}`,
+    ],
     datasets: [
       {
         data: [kmYearDriven, kmMonthDriven, kmDayDriven],
@@ -475,11 +496,10 @@ const styles = StyleSheet.create({
   titleContainer: {
     padding: 8,
     marginTop: 5,
-
   },
   titleText: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "white"
+    color: "white",
   },
 });

@@ -7,6 +7,7 @@ import {
   RefreshControl,
   SafeAreaView,
   ImageBackground,
+  View,
 } from "react-native";
 import * as React from "react";
 import { db, auth } from "../../configurations/index";
@@ -72,8 +73,6 @@ const CarLists = ({ navigation }) => {
       <SafeAreaView style={styles.container}>
         <FlatList
           data={cars}
-          contentContainerStyle={styles.container}
-          style={styles.list}
           keyExtractor={(item) => item.id}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -87,7 +86,9 @@ const CarLists = ({ navigation }) => {
                 });
               }}
             >
-              <Text style={styles.item}>{item.name}</Text>
+              <View style={styles.item}>
+                <Text style={styles.input}>{item.name}</Text>
+              </View>
             </TouchableOpacity>
           )}
         />
@@ -104,7 +105,6 @@ const styles = StyleSheet.create({
   item: {
     marginTop: 20,
     padding: 20,
-    fontSize: 18,
     marginHorizontal: 10,
     marginTop: 20,
     borderRadius: 30,
@@ -113,13 +113,11 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   input: {
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
+    fontSize: 17,
   },
   list: {
     paddingBottom: 20,
+    overflow: "hidden",
   },
 });
 //Exporting the function to be viewed in the main screen.
