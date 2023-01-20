@@ -56,19 +56,9 @@ export default function HomeScreen(props) {
   //Calculating the remaining fuel.
   let remainingFuelPercentage;
   if (remainingPetrol / props.car.fuelTankCapacity <= 0) {
-    Alert.alert("Insufficient fuel", "Fuel tank is empty.", [
-      { text: "OK", onPress: () => console.log("OK Pressed") },
-    ]);
     remainingFuelPercentage = 0;
   } else {
     remainingFuelPercentage = remainingPetrol / props.car.fuelTankCapacity;
-    if (remainingFuelPercentage <= 0.1) {
-      Alert.alert(
-        "Low fuel",
-        "Fuel level is low. Please refill soon to avoid engine damage.",
-        [{ text: "OK", onPress: () => console.log("OK Pressed") }]
-      );
-    }
   }
   //Calculating the remaining oil.
   let remainingOilPercentage;
