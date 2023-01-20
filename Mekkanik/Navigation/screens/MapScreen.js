@@ -28,7 +28,7 @@ export default function MapScreen({ navigation }) {
 
   async function getCurrentLocation() {
     try {
-      const status = await Location.requestBackgroundPermissionsAsync();
+      const status = await Location.requestForegroundPermissionsAsync();
       if (status.status !== "granted") {
         console.log("Permission to access location was denied");
         return;
