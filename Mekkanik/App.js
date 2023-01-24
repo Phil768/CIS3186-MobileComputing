@@ -31,7 +31,6 @@ const App = () => {
                 style={styles.button}
                 onPress={() => {
                   navigation.navigate("Add");
-                  checkLoginStatus();
                 }}
               >
                 <Text style={styles.buttonText}>Add</Text>
