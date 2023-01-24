@@ -113,6 +113,7 @@ export default function HomeScreen(props) {
       todaysMonthLetters = "Dec";
       break;
   }
+  //Getting the full year.
   const todaysYear = today.getFullYear();
   //Importing the background image.
   const imageBg = require("../../assets/imageBg.png");
@@ -128,7 +129,6 @@ export default function HomeScreen(props) {
   //Running the above function upon render.
   React.useEffect(() => {
     getData();
-    console.log("TOGGLE: " + toggle);
   }, []);
   //Function which handles the toggle button.
   async function handleToggle() {
@@ -337,14 +337,6 @@ export default function HomeScreen(props) {
   }, []);
   //useEffect to check if a warning alert should be displayed.
   React.useEffect(() => {
-    //getCurrentFuelData();
-    console.log(
-      "FUEL AND OIL: ",
-      remainingPetrol,
-      props.car.fuelTankCapacity,
-      remainingOil,
-      oilAverage
-    );
     if (remainingPetrol / props.car.fuelTankCapacity <= 0.2 && !carAlert) {
       Alert.alert(
         "Fluids alert!",
@@ -366,7 +358,7 @@ export default function HomeScreen(props) {
     labels: ["Oil", "Fuel"], // optional
     data: [remainingOilPercentage, remainingFuelPercentage],
   };
-
+  //Setting the data to be displayed in the bar chart.
   const dataBarChart = {
     labels: [
       `Year - ${todaysYear}`,

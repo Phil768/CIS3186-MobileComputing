@@ -15,14 +15,11 @@ import { collection, query, getDocs } from "firebase/firestore";
 //Main function of the screen.
 const CarLists = ({ navigation }) => {
   const currentUser = auth.currentUser;
-  //console.log("Current user email: " + currentUser.email);
   const [loading, setLoading] = React.useState(true); // Set loading to true on component mount
   const [cars, setCars] = React.useState([]); // Initial empty array of cars
   const [refreshing, setRefreshing] = React.useState(false);
   const imageBg = require("../../assets/imageBg.png");
-
   // Seeing if the cars are updating.
-
   console.log(cars);
   //Function to get all the data from the databse.
   const getData = async () => {
@@ -33,8 +30,6 @@ const CarLists = ({ navigation }) => {
     console.log("Iterating through querySnapshot " + querySnapshot);
     querySnapshot.forEach((documentSnapshot) => {
       var data = documentSnapshot.data();
-      console.log(documentSnapshot.id);
-      console.log("Data: " + data);
       if (data.email === currentUser.email) {
         cars.push({
           ...documentSnapshot.data(),

@@ -38,8 +38,6 @@ const AddCarToList = ({ navigation }) => {
     console.log("Iterating through querySnapshot " + querySnapshot);
     querySnapshot.forEach((documentSnapshot) => {
       var data = documentSnapshot.data();
-      console.log(documentSnapshot.id);
-      console.log("Data: " + data);
       c.push({
         value: documentSnapshot.data(),
         key: documentSnapshot.id,
@@ -56,7 +54,6 @@ const AddCarToList = ({ navigation }) => {
       console.log("Success");
     };
   }, []);
-  console.log("Name: " + cars.key);
   //Adding the data to the database.
   let addCar = async (car) => {
     var carOneAlreadyExists = false;

@@ -15,53 +15,10 @@ import { createStackNavigator } from "@react-navigation/stack";
 //Creating a new stack navigator to handle when a screen transitions to another.
 const Stack = createStackNavigator();
 const App = () => {
-  //Creating a new state
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  //Storing the data to storage.
-  const storeData = async (value) => {
-    try {
-      //Awaiting the async storoage and storing the data with an allocated key.
-      await AsyncStorage.setItem("@storage_Key", JSON.stringify(value));
-    } catch (e) {
-      // saving error
-    }
-  };
-  //Checking the login status.
-  const checkLoginStatus = () => {
-    //Checking if the state of the auth changes. (i.e. the user has logged in).
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        //Setting the state.
-        setIsLoggedIn(true);
-        //Saving data to storage.
-        storeData(isLoggedIn);
-      } else {
-        //Setting the state.
-        setIsLoggedIn(false);
-        //Saving data to storage.
-        storeData(isLoggedIn);
-      }
-    });
-  };
-  //Checks login usng useEffect which runs automatically once before anything else.
-  useEffect(() => {
-    //Checking the login status before evrything else.
-    checkLoginStatus();
-    console.log("LOGGED IN", isLoggedIn);
-    //Getting the data from storage.
-    setTimeout(async () => {
-      const value = JSON.parse(await AsyncStorage.getItem("@storage_Key"));
-      console.log("VALUE", value);
-      if (value !== null) {
-        //Setting the new state.
-        setIsLoggedIn(value);
-      }
-    }, 500);
-  }, []);
   //The body that is returned by this file, what is viewed on the screen.
   return (
     <NavigationContainer independent={true}>
-      <Stack.Navigator initialRouteName={isLoggedIn ? "List" : "Login"}>
+      <Stack.Navigator initialRouteName="Login">
         <Stack.Screen name="Login" component={LoginSignupPage} />
         <Stack.Screen name="Register" component={RegisterPage} />
         <Stack.Screen
